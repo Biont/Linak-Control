@@ -1,8 +1,13 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "ElectronReact",
-  "version": "0.10.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "linak-control",
+  "productName": "linak-control",
+  "version": "1.0.0",
+  "description": "GUI utility to control Linak-powered height-adjustable tables via USB",
+  "author": {
+    "name": "Moritz Meißelbach",
+    "email": "arbelzapf@gmail.com",
+    "url": "https://github.com/biont"
+  },
   "main": "main.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --retries 2 --compilers js:babel-register --recursive --require ./test/setup.js test/**/*.spec.js",
@@ -75,11 +80,6 @@
     "type": "git",
     "url": "git+https://github.com/chentsulin/electron-react-boilerplate.git"
   },
-  "author": {
-    "name": "C. T. Lin",
-    "email": "chentsulin@gmail.com",
-    "url": "https://github.com/chentsulin"
-  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/chentsulin/electron-react-boilerplate/issues"
@@ -93,7 +93,6 @@
     "webpack",
     "react-hot"
   ],
-  "homepage": "https://github.com/chentsulin/electron-react-boilerplate#readme",
   "devDependencies": {
     "asar": "^0.12.4",
     "babel-core": "^6.21.0",

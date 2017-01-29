@@ -1,13 +1,13 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "electron-react-boilerplate",
+  "name": "linak-control",
+  "productName": "linak-control",
   "version": "1.0.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "description": "GUI utility to control Linak-powered height-adjustable tables via USB",
   "main": "./main.js",
   "author": {
-    "name": "C. T. Lin",
-    "email": "chentsulin@gmail.com",
-    "url": "https://github.com/chentsulin"
+    "name": "Moritz Meißelbach",
+    "email": "arbelzapf@gmail.com",
+    "url": "https://github.com/biont"
   },
   "license": "MIT",
   "dependencies": {
