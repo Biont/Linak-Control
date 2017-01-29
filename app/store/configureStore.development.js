@@ -42,8 +42,8 @@ export default function configureStore(initialState?: scheduleStateType) {
     const store = createStore(rootReducer, undefined, enhancer);
 
     // persistStore(store, {storage: new SettingsStorage()});
-    let persistor = persistStore(store);
-    persistor.purge();
+    persistStore(store);
+    
     if (module.hot) {
         module.hot.accept('../reducers', () =>
             store.replaceReducer(require('../reducers')) // eslint-disable-line global-require

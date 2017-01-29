@@ -49,12 +49,19 @@ class Schedule extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {items: [], lastItemValue: {}};
+        this.state = {
+            items: [],
+            lastItemValue: this.getNewItemDefaults()
+        };
     }
 
     componentWillReceiveProps(nextProps) {
         console.log('componentWillReceiveProps', nextProps);
         this.setState({items: nextProps.items || []});
+    }
+
+    getNewItemDefaults() {
+        return JSON.parse(JSON.stringify(newItemDefaults));
     }
 
     render() {
@@ -153,11 +160,12 @@ class Schedule extends Component {
     }
 
     addItem() {
-        let items = Array.from(this.state.items), newItem = JSON.parse(JSON.stringify(this.state.lastItemValue || {}));
+        console.log(this.state);
+        let items = Array.from(this.state.items), newItem = JSON.parse(JSON.stringify(this.state.lastItemValue));
         this.props.onAdd(newItem);
         this.setState({
             items: items.concat(newItem),
-            lastItemValue: JSON.parse(JSON.stringify(newItemDefaults))
+            lastItemValue: this.getNewItemDefaults()
         });
 
     }
