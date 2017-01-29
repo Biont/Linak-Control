@@ -186,6 +186,7 @@
     "redux-persist": "^4.1.0",
     "redux-thunk": "^2.1.0",
     "source-map-support": "^0.4.8",
+    "sudo-prompt": "^6.2.1",
     "time-input": "^1.3.1"
   },
   "devEngines": {
