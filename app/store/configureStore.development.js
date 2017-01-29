@@ -43,7 +43,7 @@ export default function configureStore(initialState?: scheduleStateType) {
 
     // persistStore(store, {storage: new SettingsStorage()});
     persistStore(store);
-    
+
     if (module.hot) {
         module.hot.accept('../reducers', () =>
             store.replaceReducer(require('../reducers')) // eslint-disable-line global-require

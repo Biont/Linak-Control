@@ -22,7 +22,7 @@ export default function schedule(items = [], action: actionType) {
         case SCHEDULE_REMOVE:
             return items.splice(action.index, 1);
         case SCHEDULE_CHANGE:
-            return items;
+            return items.slice();
         default:
             return items;
     }

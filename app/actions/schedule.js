@@ -16,7 +16,7 @@ export function onRemove(index) {
     };
 }
 
-export function onChange(index, item) {
+export function onUpdate(index, item) {
     return {
         type: SCHEDULE_CHANGE,
         index: index,

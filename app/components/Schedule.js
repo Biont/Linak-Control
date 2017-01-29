@@ -56,7 +56,6 @@ class Schedule extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('componentWillReceiveProps', nextProps);
         this.setState({items: nextProps.items || []});
     }
 
@@ -65,7 +64,6 @@ class Schedule extends Component {
     }
 
     render() {
-        console.log('Rendering Schedule', this);
         let state = this.state || {};
         let rendered = [], items = state.items || [];
         items.concat(
@@ -84,8 +82,6 @@ class Schedule extends Component {
                 clickHandler = (newItem) ? this.addItem.bind(this) : this.removeItem.bind(this, idx);
             date.setHours(item.hours, item.minutes, 0, 0);
 
-            console.log(item);
-
             rendered.push(
                 <li
                     key={idx}
@@ -98,7 +94,7 @@ class Schedule extends Component {
                                 key={idx}
                                 name={'name-'+idx}
                                 defaultValue={item.name}
-                                onChange={this.onNameChange.bind(this)}
+                                onChange={this.onNameChange.bind(this,idx)}
                                 floatingLabelText="Name"
                                 style={{flex:1}}
                             />
@@ -123,7 +119,7 @@ class Schedule extends Component {
                                 max={1000}
                                 defaultValue={1}
                                 value={item.height}
-                                onChange={this.onHeightChange.bind(this)}
+                                onChange={this.onHeightChange.bind(this,idx)}
                                 style={{flex:1}}
                             />
                         </Col>
@@ -138,29 +134,51 @@ class Schedule extends Component {
         return (<ul>{rendered}</ul>);
     }
 
-    onTimeChange(idx, value) {
-        console.log(idx);
-        console.log(value);
+    onTimeChange(idx, date) {
+        let items = this.state.items;
+        items[idx]['hours'] = date.getHours();
+        items[idx]['minutes'] = date.getMinutes();
+
         if (idx === this.state.items.length) {
-            return this.setState({lastItemValue: {...this.state.lastItemValue, hours: '01', minutes: '22'}});
+            return this.setState({
+                lastItemValue: {
+                    ...this.state.lastItemValue,
+                    hours: date.getHours(),
+                    minutes: date.getMinutes()
+                }
+            });
         }
+        this.setState({items});
+
+        this.props.onUpdate(this.state.items);
+
     }
 
-    onHeightChange(event, key, payload) {
-        console.log(event);
-        console.log(key);
-        console.log(payload);
+    onHeightChange(idx, event, height) {
+        let items = this.state.items;
+        items[idx]['height'] = height;
+        if (idx === this.state.items.length) {
+            this.setState({lastItemValue: {...this.state.lastItemValue, height: height}});
+            return;
+        }
+        this.setState({items});
+        this.props.onUpdate(this.state.items);
+
     }
 
-    onNameChange(event, key, payload) {
-        console.log(event);
-        console.log(key);
-        console.log(payload);
+    onNameChange(idx, event, name) {
+        console.log(arguments);
+        let items = this.state.items;
+        items[idx]['name'] = name;
+        if (idx === this.state.items.length) {
+            this.setState({lastItemValue: {...this.state.lastItemValue, name: name}});
+            return;
+        }
+        this.setState({items});
         this.props.onUpdate(this.state.items);
     }
 
     addItem() {
-        console.log(this.state);
         let items = Array.from(this.state.items), newItem = JSON.parse(JSON.stringify(this.state.lastItemValue));
         this.props.onAdd(newItem);
         this.setState({
@@ -171,10 +189,10 @@ class Schedule extends Component {
     }
 
     removeItem(idx) {
-        this.props.onRemove(idx);
         let items = Array.from(this.state.items);
         items.splice(idx, 1);
         this.setState({items});
+        this.props.onRemove(idx);
     }
 }
 
