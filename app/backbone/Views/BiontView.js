@@ -1,13 +1,25 @@
+const fs = require( 'fs' );
+const ejs = require( 'ejs' );
+const Backbone = require( 'backbone' );
 const TemplateHelpers = require( '../TemplateHelpers' );
+const tplDir = '../../tpl/';
 
-class BiontView extends Backbone.View {
+require.extensions[ '.ejs' ] = function( module ) {
+	let filename = module.filename;
+	let options = { filename: filename, client: true, compileDebug: true };
+	let template = fs.readFileSync( filename ).toString().replace( /^\uFEFF/, '' );
+	let fn = ejs.compile( template, options );
+	return module._compile( 'module.exports = ' + fn.toString() + ';', filename );
+};
+
+module.exports = class BiontView extends Backbone.View {
 	/**
 	 * Make all BRViews use our own TemplateLoader
 	 *
 	 * @returns {*}
 	 */
 	get template() {
-		return _.template( this.getTemplateFromDOM() )
+		return this.getTemplate()
 	}
 
 	constructor( data, options ) {
@@ -23,17 +35,19 @@ class BiontView extends Backbone.View {
 	 * @param tplOverride
 	 * @returns {string}
 	 */
-	getTemplateFromDOM( tplOverride ) {
+	getTemplate( tplOverride ) {
 
 		let tpl;
 
 		/**
 		 * Try to find a given override first
 		 */
+		tplOverride = __dirname + '/' + tplDir + tplOverride + '.ejs';
+
 		if ( tplOverride && (
-				tpl = document.getElementById( tplOverride )
+				fs.existsSync( tplOverride )
 			) ) {
-			return tpl.innerHTML;
+			return require( tplOverride );
 		}
 
 		/**
@@ -41,14 +55,17 @@ class BiontView extends Backbone.View {
 		 */
 		let curObject = this;
 		while ( curObject && curObject.constructor.name !== 'BiontView' ) {
-			if ( tpl = document.getElementById( curObject.constructor.name ) ) {
-				return tpl.innerHTML;
+			let tplModule = __dirname + '/' + tplDir + curObject.constructor.name + '.ejs';
+			if ( fs.existsSync( tplModule ) ) {
+				return require( tplModule );
 			}
 			curObject = Object.getPrototypeOf( curObject );
 		}
 
 		console.error( 'Could not find template for View ' + this.constructor.name );
-		return '<div class="tplError">MISSING TEMPLATE</div>';
+		return function() {
+			return '<div class="tplError">MISSING TEMPLATE</div>'
+		};
 	}
 
 	/**
@@ -79,5 +96,3 @@ class BiontView extends Backbone.View {
 	}
 
 }
-
-module.exports = BiontView;
