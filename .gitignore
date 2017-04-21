@@ -25,22 +25,12 @@ build/Release
 
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
-node_modules
+.bak/node_modules
 app/node_modules
 
 # OSX
 .DS_Store
-
-# App packaged
-release
-app/main.js
-app/main.js.map
-app/bundle.js
-app/bundle.js.map
-app/style.css
-app/style.css.map
-dist
-main.js
-main.js.map
-
+.bak
 .idea
+node_modules
+bower_components
