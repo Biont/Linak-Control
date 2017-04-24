@@ -1,8 +1,8 @@
 import AppView from "./backbone/Views/AppView";
 import PersistentDataCollection from "./backbone/Collections/PersistentDataCollection.js";
 import ScheduleItem from "./backbone/Models/ScheduleItem";
+import SchedulerLogic from './util/schedulerLogic.js';
 
-const Linak = require('./util/linakUtil.js');
 class App {
     /**
      * Configure the sudo prompt
@@ -14,8 +14,8 @@ class App {
         let schedule = new PersistentDataCollection({
             model: ScheduleItem,
             comparator: function (m) {
-                console.log('sort',m);
-                console.log('parseDate',m.getTimeStamp());
+                console.log('sort', m);
+                console.log('parseDate', m.getTimeStamp());
                 return m.getTimeStamp();
             }
         });
@@ -25,6 +25,9 @@ class App {
         });
         schedule.fetch();
         appView.render();
+        console.log(SchedulerLogic);
+        let scheduler = new SchedulerLogic(schedule);
+        scheduler.boot();
         // let linak = new Linak();
         // linak.moveTo( 60 );
     }

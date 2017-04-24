@@ -12,11 +12,13 @@ var _ScheduleItem = require("./backbone/Models/ScheduleItem");
 
 var _ScheduleItem2 = _interopRequireDefault(_ScheduleItem);
 
+var _schedulerLogic = require("./util/schedulerLogic.js");
+
+var _schedulerLogic2 = _interopRequireDefault(_schedulerLogic);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Linak = require('./util/linakUtil.js');
 
 var App = function () {
     /**
@@ -41,6 +43,9 @@ var App = function () {
         });
         schedule.fetch();
         appView.render();
+        console.log(_schedulerLogic2.default);
+        var scheduler = new _schedulerLogic2.default(schedule);
+        scheduler.boot();
         // let linak = new Linak();
         // linak.moveTo( 60 );
     };

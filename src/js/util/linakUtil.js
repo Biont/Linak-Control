@@ -1,5 +1,5 @@
-const Sudo = require( 'sudo-prompt' );
-class LinakUtil {
+import Sudo from 'sudo-prompt'  ;
+export default class LinakUtil {
 	/**
 	 * Configure the sudo prompt
 	 */
@@ -35,4 +35,3 @@ class LinakUtil {
 	}
 
 }
-module.exports = LinakUtil;

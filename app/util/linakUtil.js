@@ -1,8 +1,14 @@
 'use strict';
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+exports.__esModule = true;
 
-var Sudo = require('sudo-prompt');
+var _sudoPrompt = require('sudo-prompt');
+
+var _sudoPrompt2 = _interopRequireDefault(_sudoPrompt);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var LinakUtil = function () {
 	/**
@@ -36,7 +42,7 @@ var LinakUtil = function () {
 			// command output is in stdout
 			console.log(arguments);
 		});
-		Sudo.exec(__dirname + '/bin/example-moveTo ' + position, this.options, function (error, stdout, stderr) {
+		_sudoPrompt2.default.exec(__dirname + '/bin/example-moveTo ' + position, this.options, function (error, stdout, stderr) {
 			console.log(arguments);
 			if (error) {
 				console.log(stderr);
@@ -47,5 +53,5 @@ var LinakUtil = function () {
 	return LinakUtil;
 }();
 
-module.exports = LinakUtil;
+exports.default = LinakUtil;
 //# sourceMappingURL=linakUtil.js.map
