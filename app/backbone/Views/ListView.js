@@ -1,51 +1,78 @@
-const BiontView = require( './BiontView.js' );
-const TemplateHelpers = require( '../TemplateHelpers' );
+"use strict";
 
-const ItemView = require( "./ScheduleItemView" );
+exports.__esModule = true;
 
-module.exports = class ListView extends BiontView {
-	events() {
+var _BiontView = require("./BiontView.js");
+
+var _BiontView2 = _interopRequireDefault(_BiontView);
+
+var _ScheduleItemView = require("./ScheduleItemView");
+
+var _ScheduleItemView2 = _interopRequireDefault(_ScheduleItemView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ListView = function (_BiontView$extend) {
+	_inherits(ListView, _BiontView$extend);
+
+	ListView.prototype.events = function events() {
 		return {
 			tagName: 'div',
-			events : {}
+			events: {}
 		};
-	}
+	};
 
 	/**
-	 * Initialize this class
-	 */
-	constructor( data, options ) {
-		super( data, options );
-		this.view = data.view || ItemView;
-		this.filterStatus = data.filterStatus || [];
+  * Initialize this class
+  */
 
-		if ( data.rowActionsView ) {
-			this.rowActionsView = data.rowActionsView;
+
+	function ListView(data, options) {
+		_classCallCheck(this, ListView);
+
+		var _this = _possibleConstructorReturn(this, _BiontView$extend.call(this, data, options));
+
+		_this.view = data.view || _ScheduleItemView2.default;
+		_this.filterStatus = data.filterStatus || [];
+
+		if (data.rowActionsView) {
+			_this.rowActionsView = data.rowActionsView;
 		}
 
-		this.listenTo( this.collection, "sync", this.render );
-		this.listenTo( this.collection, "change:status", this.render );
-		this._views = new Map();
-		this.$el.empty();
+		_this.listenTo(_this.collection, "sync", _this.render);
+		_this.listenTo(_this.collection, "change:status", _this.render);
+		_this._views = new Map();
+		_this.$el.empty();
+		return _this;
 	}
 
 	/**
-	 * Handle output
-	 *
-	 * @returns {TableView}
-	 */
-	render() {
+  * Handle output
+  *
+  * @returns {TableView}
+  */
+
+
+	ListView.prototype.render = function render() {
+		var _this2 = this;
+
 		/**
-		 * Don't render if the list cannot be seen.
-		 * Keep an eye on this and see if it causes problems
-		 */
-		if ( !this.$el.is( ':visible' ) ) {
+   * Don't render if the list cannot be seen.
+   * Keep an eye on this and see if it causes problems
+   */
+		if (!this.$el.is(':visible')) {
 			return this;
 		}
 
-		let models = this.collection.filter( this.filterItem.bind( this ) );
+		var models = this.collection.filter(this.filterItem.bind(this));
 
-		this.removeObsoleteViews( models );
+		this.removeObsoleteViews(models);
 
 		//TODO This is an example for how we could sort the models before rendering
 		// However, since the actual rendering code cannot re-sort on the fly,
@@ -61,61 +88,72 @@ module.exports = class ListView extends BiontView {
 		// }
 		// debugger;
 
-		let curView;
-		models.forEach( ( item ) => {
-			if ( !this._views.has( item ) ) {
-				let viewArgs = {
-					model: item,
+		var curView = void 0;
+		models.forEach(function (item) {
+			if (!_this2._views.has(item)) {
+				var viewArgs = {
+					model: item
 				};
-				if ( this.rowActionsView ) {
-					viewArgs.rowActionsView = this.rowActionsView
+				if (_this2.rowActionsView) {
+					viewArgs.rowActionsView = _this2.rowActionsView;
 				}
-				let itemView = new this.view( viewArgs );
-				this._views.set( item, itemView );
-				let $el = itemView.render().$el;
+				var itemView = new _this2.view(viewArgs);
+				_this2._views.set(item, itemView);
+				var $el = itemView.render().$el;
 
 				/**
-				 * Keep sort order
-				 */
-				if ( curView === undefined ) {
-					this.$el.prepend( $el );
+     * Keep sort order
+     */
+				if (curView === undefined) {
+					_this2.$el.prepend($el);
 				} else {
-					$el.insertAfter( curView.$el );
+					$el.insertAfter(curView.$el);
 				}
 
-				$el.css( 'display', 'none' ).slideDown( 275 );
+				$el.css('display', 'none').slideDown(275);
 			}
 
-			curView = this._views.get( item );
-		} );
+			curView = _this2._views.get(item);
+		});
 		return this;
-	}
+	};
 
 	/**
-	 * Walks over the views map and kills all
-	 * views that are not present in the current selection of models
-	 *
-	 * @param models
-	 */
-	removeObsoleteViews( models ) {
-		this._views.forEach( ( view, model ) => {
-			if ( jQuery.inArray( model, models ) === -1 ) {
-				this._views.get( model ).remove();
-				this._views.delete( model );
+  * Walks over the views map and kills all
+  * views that are not present in the current selection of models
+  *
+  * @param models
+  */
+
+
+	ListView.prototype.removeObsoleteViews = function removeObsoleteViews(models) {
+		var _this3 = this;
+
+		this._views.forEach(function (view, model) {
+			if (jQuery.inArray(model, models) === -1) {
+				_this3._views.get(model).remove();
+				_this3._views.delete(model);
 			}
-		} )
-	}
+		});
+	};
 
 	/**
-	 * Filter callback.
-	 *
-	 * Checks if the current item status is present in this ViewCollection's allowed status
-	 *
-	 * @param item
-	 * @returns {boolean}
-	 */
-	filterItem( item ) {
+  * Filter callback.
+  *
+  * Checks if the current item status is present in this ViewCollection's allowed status
+  *
+  * @param item
+  * @returns {boolean}
+  */
+
+
+	ListView.prototype.filterItem = function filterItem(item) {
 		return true;
-		return jQuery.inArray( item.get( 'status' ), this.filterStatus ) !== -1;
-	}
-}
+		return jQuery.inArray(item.get('status'), this.filterStatus) !== -1;
+	};
+
+	return ListView;
+}(_BiontView2.default.extend({}));
+
+exports.default = ListView;
+//# sourceMappingURL=ListView.js.map
