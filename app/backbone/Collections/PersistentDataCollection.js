@@ -52,6 +52,7 @@ var PersistentDataCollection = function (_Backbone$Collection) {
         var _this = _possibleConstructorReturn(this, _Backbone$Collection.call(this, args, options));
 
         _this.model = args.model || _backbone2.default.Model;
+        _this.comparator = args.comparator;
         _this.endpoint = args.endpoint;
         if (args.requestParams) {
             _this.requestParams = args.requestParams;

@@ -30,7 +30,9 @@ var App = function () {
         var schedule = new _PersistentDataCollection2.default({
             model: _ScheduleItem2.default,
             comparator: function comparator(m) {
-                return -Date.parse(m.get('time'));
+                console.log('sort', m);
+                console.log('parseDate', m.getTimeStamp());
+                return m.getTimeStamp();
             }
         });
         var appView = new _AppView2.default({

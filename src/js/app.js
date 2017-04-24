@@ -14,7 +14,9 @@ class App {
         let schedule = new PersistentDataCollection({
             model: ScheduleItem,
             comparator: function (m) {
-                return -Date.parse(m.get('time'));
+                console.log('sort',m);
+                console.log('parseDate',m.getTimeStamp());
+                return m.getTimeStamp();
             }
         });
         let appView = new AppView({

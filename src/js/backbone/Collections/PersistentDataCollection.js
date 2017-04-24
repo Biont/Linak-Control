@@ -26,6 +26,7 @@ export default class PersistentDataCollection extends Backbone.Collection {
     constructor(args, options) {
         super(args, options);
         this.model = args.model || Backbone.Model;
+        this.comparator = args.comparator;
         this.endpoint = args.endpoint;
         if (args.requestParams) {
             this.requestParams = args.requestParams;

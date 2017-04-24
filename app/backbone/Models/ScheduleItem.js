@@ -6,6 +6,8 @@ var _PersistentDataModel2 = require("./PersistentDataModel");
 
 var _PersistentDataModel3 = _interopRequireDefault(_PersistentDataModel2);
 
+var _underscore = require("underscore");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -18,15 +20,35 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * Sets up a Backbone Model to use the WP REST API
  */
 var ScheduleItem = function (_PersistentDataModel) {
-  _inherits(ScheduleItem, _PersistentDataModel);
+    _inherits(ScheduleItem, _PersistentDataModel);
 
-  function ScheduleItem() {
-    _classCallCheck(this, ScheduleItem);
+    function ScheduleItem() {
+        _classCallCheck(this, ScheduleItem);
 
-    return _possibleConstructorReturn(this, _PersistentDataModel.apply(this, arguments));
-  }
+        return _possibleConstructorReturn(this, _PersistentDataModel.apply(this, arguments));
+    }
 
-  return ScheduleItem;
+    /**
+     *
+     * @returns {Date}
+     */
+    ScheduleItem.prototype.getDate = function getDate() {
+        if ((0, _underscore.isUndefined)(this.dateObj)) {
+            var data = this.get('time').split(':');
+            this.dateObj = new Date();
+            this.dateObj.setHours(data[0]);
+            this.dateObj.setMinutes(data[1]);
+            this.dateObj.setSeconds('00');
+        }
+
+        return this.dateObj;
+    };
+
+    ScheduleItem.prototype.getTimeStamp = function getTimeStamp() {
+        return this.getDate().getTime();
+    };
+
+    return ScheduleItem;
 }(_PersistentDataModel3.default);
 
 exports.default = ScheduleItem;
