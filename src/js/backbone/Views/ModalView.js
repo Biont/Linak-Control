@@ -29,7 +29,7 @@ export default class ModalView extends BiontView.extend( {
 
 	keyAction( e ) {
 		let code = e.keyCode || e.which;
-		if ( code == 27 ) {
+		if ( code === 27 ) {
 			this.remove();
 		}
 	}

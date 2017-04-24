@@ -18,10 +18,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  *  @returns {boolean} - Whether the request was deferred
  */
 function getDeferred() {
-	if (_backbone2.default.$) {
-		return (0, _underscore.result)(_backbone2.default.$, 'Deferred', false);
-	}
-	return (0, _underscore.result)(_backbone2.default, 'Deferred', false);
+    if (_backbone2.default.$) {
+        return (0, _underscore.result)(_backbone2.default.$, 'Deferred', false);
+    }
+    return (0, _underscore.result)(_backbone2.default, 'Deferred', false);
 }
 
 /**
@@ -29,77 +29,84 @@ function getDeferred() {
  */
 
 var PersistentDataModel = function (_Backbone$Model) {
-	_inherits(PersistentDataModel, _Backbone$Model);
+    _inherits(PersistentDataModel, _Backbone$Model);
 
-	function PersistentDataModel() {
-		_classCallCheck(this, PersistentDataModel);
+    function PersistentDataModel() {
+        _classCallCheck(this, PersistentDataModel);
 
-		return _possibleConstructorReturn(this, _Backbone$Model.apply(this, arguments));
-	}
+        return _possibleConstructorReturn(this, _Backbone$Model.apply(this, arguments));
+    }
 
-	// get url() {
-	// 	console.log( 'model', this.collection.endpoint );
-	// 	return this.collection.endpoint;
-	// }
+    // get url() {
+    // 	console.log( 'model', this.collection.endpoint );
+    // 	return this.collection.endpoint;
+    // }
 
-	PersistentDataModel.prototype.sync = function sync(method, model, options) {
-		console.log(arguments);
-		var store = require('electron-settings');
-		var resp = void 0,
-		    errorMessage = void 0;
-		var syncDfd = getDeferred();
-		var key = this.getKey(model);
-		var data = model.attributes;
-		try {
-			switch (method) {
-				case 'read':
-					resp = (0, _underscore.isUndefined)(model.id) ? store.getAll() : store.get(key, data);
-					break;
-				case 'create':
-				case 'patch':
-				case 'update':
-					resp = store.set(key, data);
-					break;
-				case 'delete':
-					resp = store.delete(key, data);
-					break;
-			}
-		} catch (error) {
-			errorMessage = error.message;
-		}
+    PersistentDataModel.prototype.sync = function sync(method, model, options) {
+        console.log(arguments);
+        var store = require('electron-settings');
+        var resp = void 0,
+            errorMessage = void 0;
+        var syncDfd = getDeferred();
+        var key = this.getKey(model);
+        var data = model.attributes;
+        console.log(key);
+        try {
+            switch (method) {
+                case 'read':
+                    resp = (0, _underscore.isUndefined)(model.id) ? store.getAll() : store.get(key, data);
+                    break;
+                case 'create':
+                case 'patch':
+                case 'update':
+                    resp = store.set(key, data);
+                    break;
+                case 'delete':
+                    console.log(store.getAll());
+                    console.log(store.get(key));
+                    resp = store.delete(key);
+                    console.log(store.get(key));
+                    break;
+            }
+        } catch (error) {
+            errorMessage = error.message;
+        }
 
-		if (resp) {
-			if (options.success) {
-				options.success.call(model, resp, options);
-			}
-			if (syncDfd) {
-				syncDfd.resolve(resp);
-			}
-		} else {
-			errorMessage = errorMessage ? errorMessage : 'Record Not Found';
+        if (resp) {
+            if (options.success) {
+                options.success.call(model, resp, options);
+            }
+            if (syncDfd) {
+                syncDfd.resolve(resp);
+            }
+        } else {
+            errorMessage = errorMessage ? errorMessage : 'Record Not Found';
 
-			if (options.error) {
-				options.error.call(model, errorMessage, options);
-			}
-			if (syncDfd) {
-				syncDfd.reject(errorMessage);
-			}
-		}
+            if (options.error) {
+                options.error.call(model, errorMessage, options);
+            }
+            if (syncDfd) {
+                syncDfd.reject(errorMessage);
+            }
+        }
 
-		// add compatibility with $.ajax
-		// always execute callback for success and error
-		if (options.complete) {
-			options.complete.call(model, resp);
-		}
+        // add compatibility with $.ajax
+        // always execute callback for success and error
+        if (options.complete) {
+            options.complete.call(model, resp);
+        }
 
-		return syncDfd && syncDfd.promise();
-	};
+        return syncDfd && syncDfd.promise();
+    };
 
-	PersistentDataModel.prototype.getKey = function getKey(model) {
-		return model.constructor.name + '.' + model.cid;
-	};
+    PersistentDataModel.prototype.getKey = function getKey(model) {
+        if ((0, _underscore.isUndefined)(model.id)) {
+            model.id = model.cid;
+        }
+        return model.constructor.name + '.' + model.id;
+    };
 
-	return PersistentDataModel;
+    return PersistentDataModel;
 }(_backbone2.default.Model);
 
 module.exports = PersistentDataModel;

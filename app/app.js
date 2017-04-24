@@ -19,28 +19,31 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Linak = require('./util/linakUtil.js');
 
 var App = function () {
-	/**
-  * Configure the sudo prompt
-  */
-	function App() {
-		_classCallCheck(this, App);
-	}
+    /**
+     * Configure the sudo prompt
+     */
+    function App() {
+        _classCallCheck(this, App);
+    }
 
-	App.prototype.init = function init() {
-		var schedule = new _PersistentDataCollection2.default({
-			model: _ScheduleItem2.default
-		});
-		var appView = new _AppView2.default({
-			el: '#main-app',
-			collection: schedule
-		});
-		schedule.fetch();
-		appView.render();
-		// let linak = new Linak();
-		// linak.moveTo( 60 );
-	};
+    App.prototype.init = function init() {
+        var schedule = new _PersistentDataCollection2.default({
+            model: _ScheduleItem2.default,
+            comparator: function comparator(m) {
+                return -Date.parse(m.get('time'));
+            }
+        });
+        var appView = new _AppView2.default({
+            el: '#main-app',
+            collection: schedule
+        });
+        schedule.fetch();
+        appView.render();
+        // let linak = new Linak();
+        // linak.moveTo( 60 );
+    };
 
-	return App;
+    return App;
 }();
 
 module.exports = App;

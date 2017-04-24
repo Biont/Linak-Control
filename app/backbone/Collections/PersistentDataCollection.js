@@ -22,10 +22,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  *  @returns {boolean} - Whether the request was deferred
  */
 function getDeferred() {
-	if (_backbone2.default.$) {
-		return (0, _underscore.result)(_backbone2.default.$, 'Deferred', false);
-	}
-	return (0, _underscore.result)(_backbone2.default, 'Deferred', false);
+    if (_backbone2.default.$) {
+        return (0, _underscore.result)(_backbone2.default.$, 'Deferred', false);
+    }
+    return (0, _underscore.result)(_backbone2.default, 'Deferred', false);
 }
 
 /**
@@ -33,103 +33,113 @@ function getDeferred() {
  */
 
 var PersistentDataCollection = function (_Backbone$Collection) {
-	_inherits(PersistentDataCollection, _Backbone$Collection);
+    _inherits(PersistentDataCollection, _Backbone$Collection);
 
-	_createClass(PersistentDataCollection, [{
-		key: "url",
-		get: function get() {
-			var url = this.endpoint;
-			if (this.requestParams !== undefined) {
-				url += '/?' + this.requestParams;
-			}
-			return url;
-		}
-	}]);
+    _createClass(PersistentDataCollection, [{
+        key: "url",
+        get: function get() {
+            var url = this.endpoint;
+            if (this.requestParams !== undefined) {
+                url += '/?' + this.requestParams;
+            }
+            return url;
+        }
+    }]);
 
-	function PersistentDataCollection(args, options) {
-		_classCallCheck(this, PersistentDataCollection);
+    function PersistentDataCollection(args, options) {
+        _classCallCheck(this, PersistentDataCollection);
 
-		var _this = _possibleConstructorReturn(this, _Backbone$Collection.call(this, args, options));
+        var _this = _possibleConstructorReturn(this, _Backbone$Collection.call(this, args, options));
 
-		_this.model = args.model || _backbone2.default.Model;
-		_this.endpoint = args.endpoint;
-		if (args.requestParams) {
-			_this.requestParams = args.requestParams;
-		}
-		_this.nonces = args.nonces;
-		console.log(_this.url);
-		return _this;
-	}
+        _this.model = args.model || _backbone2.default.Model;
+        _this.endpoint = args.endpoint;
+        if (args.requestParams) {
+            _this.requestParams = args.requestParams;
+        }
+        _this.nonces = args.nonces;
+        console.log(_this.url);
+        return _this;
+    }
 
-	PersistentDataCollection.prototype.sync = function sync(method, model, options) {
-		var store = require('electron-settings');
-		var resp = void 0,
-		    errorMessage = void 0;
-		var syncDfd = getDeferred();
+    PersistentDataCollection.prototype.sync = function sync(method, model, options) {
+        var store = require('electron-settings');
+        var resp = void 0,
+            errorMessage = void 0;
+        var syncDfd = getDeferred();
 
-		try {
-			switch (method) {
-				case 'read':
-					resp = (0, _underscore.isUndefined)(model.id) ? store.get(this.model.name) : store.get(model.constructor.name + '.' + model.cid);
-					break;
-				case 'create':
-				case 'patch':
-				case 'update':
-					resp = store.set(model);
-					break;
-				case 'delete':
-					resp = store.delete(model);
-					break;
-			}
-		} catch (error) {
-			errorMessage = error.message;
-		}
+        try {
+            switch (method) {
+                case 'read':
+                    resp = (0, _underscore.isUndefined)(model.id) ? store.get(this.model.name) : store.get(model.constructor.name + '.' + model.cid);
+                    break;
+                case 'create':
+                case 'patch':
+                case 'update':
+                    resp = store.set(model);
+                    break;
+                case 'delete':
+                    resp = store.delete(model);
+                    break;
+            }
+        } catch (error) {
+            errorMessage = error.message;
+        }
+        console.log(resp);
+        resp = $.map(resp, function (value, index) {
+            if ((0, _underscore.isUndefined)(value.id)) {
+                value.id = index;
+            }
+            return [value];
+        });
+        console.log(resp);
+        if (resp) {
+            if (options.success) {
+                options.success.call(model, resp, options);
+            }
+            if (syncDfd) {
+                syncDfd.resolve(resp);
+            }
+        } else {
+            errorMessage = errorMessage ? errorMessage : 'Record Not Found';
 
-		resp = $.map(resp, function (value, index) {
-			value.id = index;
-			return [value];
-		});
-		console.log(resp);
-		if (resp) {
-			if (options.success) {
-				options.success.call(model, resp, options);
-			}
-			if (syncDfd) {
-				syncDfd.resolve(resp);
-			}
-		} else {
-			errorMessage = errorMessage ? errorMessage : 'Record Not Found';
+            if (options.error) {
+                options.error.call(model, errorMessage, options);
+            }
+            if (syncDfd) {
+                syncDfd.reject(errorMessage);
+            }
+        }
 
-			if (options.error) {
-				options.error.call(model, errorMessage, options);
-			}
-			if (syncDfd) {
-				syncDfd.reject(errorMessage);
-			}
-		}
+        // add compatibility with $.ajax
+        // always execute callback for success and error
+        if (options.complete) {
+            options.complete.call(model, resp);
+        }
 
-		// add compatibility with $.ajax
-		// always execute callback for success and error
-		if (options.complete) {
-			options.complete.call(model, resp);
-		}
+        return syncDfd && syncDfd.promise();
+    };
 
-		return syncDfd && syncDfd.promise();
-	};
+    PersistentDataCollection.prototype.fetch = function fetch() {
+        _Backbone$Collection.prototype.fetch.call(this, {
+            add: true,
+            remove: true,
+            merge: true,
+            data: this.queryArgs,
+            success: function success() {
+                console.log('fetch', arguments);
+            }
+        });
+        this.checkEmpty();
+    };
 
-	PersistentDataCollection.prototype.fetch = function fetch() {
-		_Backbone$Collection.prototype.fetch.call(this, {
-			add: true,
-			remove: true,
-			merge: true,
-			data: this.queryArgs,
-			success: function success() {
-				console.log('fetch', arguments);
-			}
-		});
-	};
+    PersistentDataCollection.prototype.checkEmpty = function checkEmpty() {
+        if (this.isEmpty()) {
+            console.log('Collection is now empty');
+            this.trigger('empty', this);
+        }
+    };
 
-	return PersistentDataCollection;
+    return PersistentDataCollection;
 }(_backbone2.default.Collection);
 
 exports.default = PersistentDataCollection;
