@@ -80,6 +80,11 @@ export default class BiontView extends Backbone.View.extend( {} ) {
 		return this;
 	}
 
+	dump() {
+		console.log( this.model );
+		return this.model.toJSON();
+	}
+
 	/**
 	 * Assigns a selector within the template to a specific subview, which will then get rendered
 	 * @param view

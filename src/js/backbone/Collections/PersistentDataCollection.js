@@ -1,5 +1,5 @@
-const Backbone = require( 'backbone' );
-const { isUndefined, result } = require( 'underscore' );
+import Backbone from "backbone";
+import {isUndefined, result} from "underscore";
 
 /** Get the Deferred status from $ if we have jQuery, otherwise use Backbone's
  *  @returns {boolean} - Whether the request was deferred
@@ -14,7 +14,7 @@ function getDeferred() {
 /**
  * Created by biont on 21.04.17.
  */
-class PersistentDataCollection extends Backbone.Collection {
+export default class PersistentDataCollection extends Backbone.Collection {
 	get url() {
 		let url = this.endpoint;
 		if ( this.requestParams !== undefined ) {
@@ -43,7 +43,7 @@ class PersistentDataCollection extends Backbone.Collection {
 		try {
 			switch ( method ) {
 				case 'read':
-					resp = isUndefined( model.id ) ? store.getAll() : store.get( model );
+					resp = isUndefined( model.id ) ? store.get( this.model.name ) : store.get( model.constructor.name + '.' + model.cid );
 					break;
 				case 'create':
 				case 'patch':
@@ -59,6 +59,11 @@ class PersistentDataCollection extends Backbone.Collection {
 			errorMessage = error.message;
 		}
 
+		resp = $.map( resp, function( value, index ) {
+			value.id = index;
+			return [ value ];
+		} );
+		console.log( resp );
 		if ( resp ) {
 			if ( options.success ) {
 				options.success.call( model, resp, options );
@@ -101,5 +106,3 @@ class PersistentDataCollection extends Backbone.Collection {
 		);
 	}
 }
-
-module.exports = PersistentDataCollection;

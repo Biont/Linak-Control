@@ -1,10 +1,30 @@
-'use strict';
+"use strict";
 
 exports.__esModule = true;
 
-var _BiontView = require('./BiontView.js');
+var _BiontView = require("./BiontView.js");
 
 var _BiontView2 = _interopRequireDefault(_BiontView);
+
+var _ModalView = require("./ModalView");
+
+var _ModalView2 = _interopRequireDefault(_ModalView);
+
+var _ScheduleFormView = require("./ScheduleFormView");
+
+var _ScheduleFormView2 = _interopRequireDefault(_ScheduleFormView);
+
+var _ListView = require("./ListView.js");
+
+var _ListView2 = _interopRequireDefault(_ListView);
+
+var _ScheduleItemView = require("./ScheduleItemView.js");
+
+var _ScheduleItemView2 = _interopRequireDefault(_ScheduleItemView);
+
+var _ScheduleItem = require("../Models/ScheduleItem.js");
+
+var _ScheduleItem2 = _interopRequireDefault(_ScheduleItem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -14,7 +34,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var ListView = require('./ListView.js');
 var TemplateHelpers = require('../TemplateHelpers');
 
 var AppView = function (_BiontView$extend) {
@@ -26,18 +45,61 @@ var AppView = function (_BiontView$extend) {
 		var _this = _possibleConstructorReturn(this, _BiontView$extend.call(this, data, options));
 
 		_this.collection = data.collection;
+		_this.listView = new _ListView2.default({
+			view: _ScheduleItemView2.default,
+			collection: _this.collection
+		});
 		return _this;
 	}
 
 	AppView.prototype.open = function open() {
-		console.log('wooo');
-
-		this.collection.create({});
+		var newItem = new _ScheduleItem2.default({
+			time: new Date().toTimeString().split(' ')[0]
+		});
+		var modal = new _ModalView2.default({
+			closeBtnText: 'Save',
+			content: new _ScheduleFormView2.default({
+				model: newItem
+			})
+		});
+		modal.render();
+		this.listenTo(modal, 'remove', function () {
+			console.log('wooo');
+			newItem.save();
+			this.collection.fetch();
+		});
+		//
+		// this.collection.create( {
+		// 		time: 'hurrrrr'
+		// 	},
+		// 	{
+		// 		wait   : true,
+		// 		//TODO decouple from $author, $email and then move this in a separate class method
+		// 		success: ( model, collection, raw ) => {
+		// 			console.log( arguments );
+		// 			// $author.val( "" );
+		// 			// $email.val( "" );
+		// 			// $content.val( "" );
+		//
+		// 			// let alert = new AlertBoxView( {
+		// 			// 	'messageText'    : TemplateHelpers._e(
+		// 			// 		'Your question has been posted and is awaiting moderation.' ),
+		// 			// 	'closeButtonText': 'OK',
+		// 			// 	// 'autoClose'      : 5000
+		// 			// } );
+		// 			// alert.render();
+		//
+		// 		},
+		// 		error  : function( model, response ) {
+		// 			console.log( arguments );
+		// 			console.trace();
+		// 		}
+		// 	} );
 	};
 
 	AppView.prototype.render = function render() {
 		_BiontView$extend.prototype.render.call(this);
-		// this.assign( ListView, '[data-schedule]' );
+		this.assign(this.listView, '[data-schedule]');
 	};
 
 	return AppView;

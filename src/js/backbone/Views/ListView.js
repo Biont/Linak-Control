@@ -1,14 +1,10 @@
 import BiontView from "./BiontView.js";
-
 import ItemView from "./ScheduleItemView";
 
-export default class ListView extends BiontView.extend( {} ) {
-	events() {
-		return {
-			tagName: 'div',
-			events : {}
-		};
-	}
+export default class ListView extends BiontView.extend( {
+	tagName: 'ul',
+	events : {}
+} ) {
 
 	/**
 	 * Initialize this class
@@ -30,8 +26,6 @@ export default class ListView extends BiontView.extend( {} ) {
 
 	/**
 	 * Handle output
-	 *
-	 * @returns {TableView}
 	 */
 	render() {
 		/**
@@ -43,7 +37,7 @@ export default class ListView extends BiontView.extend( {} ) {
 		}
 
 		let models = this.collection.filter( this.filterItem.bind( this ) );
-
+		console.log( models );
 		this.removeObsoleteViews( models );
 
 		//TODO This is an example for how we could sort the models before rendering
@@ -64,7 +58,8 @@ export default class ListView extends BiontView.extend( {} ) {
 		models.forEach( ( item ) => {
 			if ( !this._views.has( item ) ) {
 				let viewArgs = {
-					model: item,
+					tagName: 'li',
+					model  : item,
 				};
 				if ( this.rowActionsView ) {
 					viewArgs.rowActionsView = this.rowActionsView

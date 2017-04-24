@@ -1,4 +1,12 @@
-'use strict';
+"use strict";
+
+var _backbone = require("backbone");
+
+var _backbone2 = _interopRequireDefault(_backbone);
+
+var _underscore = require("underscore");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6,22 +14,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Backbone = require('backbone');
-
-var _require = require('underscore'),
-    isUndefined = _require.isUndefined,
-    result = _require.result;
-
 /** Get the Deferred status from $ if we have jQuery, otherwise use Backbone's
  *  @returns {boolean} - Whether the request was deferred
  */
-
-
 function getDeferred() {
-	if (Backbone.$) {
-		return result(Backbone.$, 'Deferred', false);
+	if (_backbone2.default.$) {
+		return (0, _underscore.result)(_backbone2.default.$, 'Deferred', false);
 	}
-	return result(Backbone, 'Deferred', false);
+	return (0, _underscore.result)(_backbone2.default, 'Deferred', false);
 }
 
 /**
@@ -43,23 +43,25 @@ var PersistentDataModel = function (_Backbone$Model) {
 	// }
 
 	PersistentDataModel.prototype.sync = function sync(method, model, options) {
+		console.log(arguments);
 		var store = require('electron-settings');
 		var resp = void 0,
 		    errorMessage = void 0;
 		var syncDfd = getDeferred();
-
+		var key = this.getKey(model);
+		var data = model.attributes;
 		try {
 			switch (method) {
 				case 'read':
-					resp = isUndefined(model.id) ? store.getAll() : store.get(model);
+					resp = (0, _underscore.isUndefined)(model.id) ? store.getAll() : store.get(key, data);
 					break;
 				case 'create':
 				case 'patch':
 				case 'update':
-					resp = store.set(model);
+					resp = store.set(key, data);
 					break;
 				case 'delete':
-					resp = store.delete(model);
+					resp = store.delete(key, data);
 					break;
 			}
 		} catch (error) {
@@ -93,8 +95,12 @@ var PersistentDataModel = function (_Backbone$Model) {
 		return syncDfd && syncDfd.promise();
 	};
 
+	PersistentDataModel.prototype.getKey = function getKey(model) {
+		return model.constructor.name + '.' + model.cid;
+	};
+
 	return PersistentDataModel;
-}(Backbone.Model);
+}(_backbone2.default.Model);
 
 module.exports = PersistentDataModel;
 //# sourceMappingURL=PersistentDataModel.js.map

@@ -1,6 +1,16 @@
-'use strict';
+"use strict";
+
+exports.__esModule = true;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _backbone = require("backbone");
+
+var _backbone2 = _interopRequireDefault(_backbone);
+
+var _underscore = require("underscore");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -8,22 +18,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Backbone = require('backbone');
-
-var _require = require('underscore'),
-    isUndefined = _require.isUndefined,
-    result = _require.result;
-
 /** Get the Deferred status from $ if we have jQuery, otherwise use Backbone's
  *  @returns {boolean} - Whether the request was deferred
  */
-
-
 function getDeferred() {
-	if (Backbone.$) {
-		return result(Backbone.$, 'Deferred', false);
+	if (_backbone2.default.$) {
+		return (0, _underscore.result)(_backbone2.default.$, 'Deferred', false);
 	}
-	return result(Backbone, 'Deferred', false);
+	return (0, _underscore.result)(_backbone2.default, 'Deferred', false);
 }
 
 /**
@@ -34,7 +36,7 @@ var PersistentDataCollection = function (_Backbone$Collection) {
 	_inherits(PersistentDataCollection, _Backbone$Collection);
 
 	_createClass(PersistentDataCollection, [{
-		key: 'url',
+		key: "url",
 		get: function get() {
 			var url = this.endpoint;
 			if (this.requestParams !== undefined) {
@@ -49,7 +51,7 @@ var PersistentDataCollection = function (_Backbone$Collection) {
 
 		var _this = _possibleConstructorReturn(this, _Backbone$Collection.call(this, args, options));
 
-		_this.model = args.model || Backbone.Model;
+		_this.model = args.model || _backbone2.default.Model;
 		_this.endpoint = args.endpoint;
 		if (args.requestParams) {
 			_this.requestParams = args.requestParams;
@@ -68,7 +70,7 @@ var PersistentDataCollection = function (_Backbone$Collection) {
 		try {
 			switch (method) {
 				case 'read':
-					resp = isUndefined(model.id) ? store.getAll() : store.get(model);
+					resp = (0, _underscore.isUndefined)(model.id) ? store.get(this.model.name) : store.get(model.constructor.name + '.' + model.cid);
 					break;
 				case 'create':
 				case 'patch':
@@ -83,6 +85,11 @@ var PersistentDataCollection = function (_Backbone$Collection) {
 			errorMessage = error.message;
 		}
 
+		resp = $.map(resp, function (value, index) {
+			value.id = index;
+			return [value];
+		});
+		console.log(resp);
 		if (resp) {
 			if (options.success) {
 				options.success.call(model, resp, options);
@@ -123,7 +130,7 @@ var PersistentDataCollection = function (_Backbone$Collection) {
 	};
 
 	return PersistentDataCollection;
-}(Backbone.Collection);
+}(_backbone2.default.Collection);
 
-module.exports = PersistentDataCollection;
+exports.default = PersistentDataCollection;
 //# sourceMappingURL=PersistentDataCollection.js.map

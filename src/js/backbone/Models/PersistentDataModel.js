@@ -1,5 +1,5 @@
-const Backbone = require( 'backbone' );
-const { isUndefined, result } = require( 'underscore' );
+import Backbone from "backbone";
+import {isUndefined, result} from "underscore";
 
 /** Get the Deferred status from $ if we have jQuery, otherwise use Backbone's
  *  @returns {boolean} - Whether the request was deferred
@@ -14,7 +14,7 @@ function getDeferred() {
 /**
  * Sets up a Backbone Model to use the WP REST API
  */
-class PersistentDataModel extends Backbone.Model{
+class PersistentDataModel extends Backbone.Model {
 
 	// get url() {
 	// 	console.log( 'model', this.collection.endpoint );
@@ -22,22 +22,24 @@ class PersistentDataModel extends Backbone.Model{
 	// }
 
 	sync( method, model, options ) {
+		console.log( arguments )
 		const store = require( 'electron-settings' );
 		let resp, errorMessage;
 		const syncDfd = getDeferred();
-
+		let key = this.getKey( model );
+		let data = model.attributes;
 		try {
 			switch ( method ) {
 				case 'read':
-					resp = isUndefined( model.id ) ? store.getAll() : store.get( model );
+					resp = isUndefined( model.id ) ? store.getAll() : store.get( key, data );
 					break;
 				case 'create':
 				case 'patch':
 				case 'update':
-					resp = store.set( model );
+					resp = store.set( key, data );
 					break;
 				case 'delete':
-					resp = store.delete( model );
+					resp = store.delete( key, data );
 					break;
 			}
 
@@ -71,6 +73,10 @@ class PersistentDataModel extends Backbone.Model{
 		}
 
 		return syncDfd && syncDfd.promise();
+	}
+
+	getKey( model ) {
+		return model.constructor.name + '.' + model.cid;
 	}
 }
 

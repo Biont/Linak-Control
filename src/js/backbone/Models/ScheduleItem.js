@@ -1,10 +1,8 @@
-const PersistentDataModel = require( './PersistentDataModel' );
+import PersistentDataModel from "./PersistentDataModel";
 
 /**
  * Sets up a Backbone Model to use the WP REST API
  */
-class ScheduleItem extends PersistentDataModel {
+export default class ScheduleItem extends PersistentDataModel {
 
 }
-
-module.exports = ScheduleItem;

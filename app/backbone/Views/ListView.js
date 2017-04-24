@@ -21,18 +21,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ListView = function (_BiontView$extend) {
 	_inherits(ListView, _BiontView$extend);
 
-	ListView.prototype.events = function events() {
-		return {
-			tagName: 'div',
-			events: {}
-		};
-	};
-
 	/**
   * Initialize this class
   */
-
-
 	function ListView(data, options) {
 		_classCallCheck(this, ListView);
 
@@ -54,8 +45,6 @@ var ListView = function (_BiontView$extend) {
 
 	/**
   * Handle output
-  *
-  * @returns {TableView}
   */
 
 
@@ -71,7 +60,7 @@ var ListView = function (_BiontView$extend) {
 		}
 
 		var models = this.collection.filter(this.filterItem.bind(this));
-
+		console.log(models);
 		this.removeObsoleteViews(models);
 
 		//TODO This is an example for how we could sort the models before rendering
@@ -92,6 +81,7 @@ var ListView = function (_BiontView$extend) {
 		models.forEach(function (item) {
 			if (!_this2._views.has(item)) {
 				var viewArgs = {
+					tagName: 'li',
 					model: item
 				};
 				if (_this2.rowActionsView) {
@@ -153,7 +143,10 @@ var ListView = function (_BiontView$extend) {
 	};
 
 	return ListView;
-}(_BiontView2.default.extend({}));
+}(_BiontView2.default.extend({
+	tagName: 'ul',
+	events: {}
+}));
 
 exports.default = ListView;
 //# sourceMappingURL=ListView.js.map
