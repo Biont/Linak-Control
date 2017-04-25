@@ -15,13 +15,6 @@ function getDeferred() {
  * Created by biont on 21.04.17.
  */
 export default class PersistentDataCollection extends Backbone.Collection {
-    get url() {
-        let url = this.endpoint;
-        if (this.requestParams !== undefined) {
-            url += '/?' + this.requestParams;
-        }
-        return url;
-    }
 
     constructor(args, options) {
         super(args, options);
@@ -32,8 +25,6 @@ export default class PersistentDataCollection extends Backbone.Collection {
             this.requestParams = args.requestParams;
 
         }
-        this.nonces = args.nonces;
-        console.log(this.url);
     }
 
     sync(method, model, options) {
@@ -59,7 +50,6 @@ export default class PersistentDataCollection extends Backbone.Collection {
         } catch (error) {
             errorMessage = error.message;
         }
-        console.log(resp);
         resp = $.map(resp, function (value, index) {
             if (isUndefined(value.id)) {
                 value.id = index;
@@ -67,7 +57,6 @@ export default class PersistentDataCollection extends Backbone.Collection {
             }
             return [value];
         });
-        console.log(resp);
         if (resp) {
             if (options.success) {
                 options.success.call(model, resp, options);

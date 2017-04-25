@@ -16,11 +16,6 @@ function getDeferred() {
  */
 class PersistentDataModel extends Backbone.Model {
 
-	// get url() {
-	// 	console.log( 'model', this.collection.endpoint );
-	// 	return this.collection.endpoint;
-	// }
-
 	sync( method, model, options ) {
 		console.log( arguments );
 		const store = require( 'electron' ).remote.require( 'electron-settings' );

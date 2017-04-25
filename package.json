@@ -12,6 +12,7 @@
     "material-design-icons-iconfont": "^3.0.3",
     "materialize-clockpicker": "^1.0.1",
     "materialize-css": "^0.98.2",
+    "node-notifier": "^5.1.2",
     "sudo-prompt": "^7.0.0"
   },
   "devDependencies": {

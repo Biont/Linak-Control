@@ -1,11 +1,10 @@
-import Linak from "./linakUtil.js";
 import {find} from "underscore";
 
 export default class SchedulerLogic {
-	constructor( schedule, linak ) {
+	constructor( schedule, subscribers ) {
 		this.schedule = schedule;
 		this.setData( schedule );
-		this.linak = linak || new Linak();
+		this.subscribers = subscribers;
 		this.cmpDate = this.setCmpDateToNow();
 		console.log( this.schedule );
 	}
@@ -31,17 +30,10 @@ export default class SchedulerLogic {
 	}
 
 	getNextScheduleItem() {
-		console.log( this.schedule );
-		return find( this.schedule, ( model ) => {
-			console.log( 'CALLBACK!' );
-			console.log( 'this', this.getItemTimestamp( model ) );
-			console.log( 'cmpDate', this.cmpDate );
-			return this.getItemTimestamp( model ) > this.cmpDate;
-		} );
+		return find( this.schedule, ( model ) => this.getItemTimestamp( model ) > this.cmpDate );
 	}
 
 	getItemTimestamp( item ) {
-		console.log( 'next timestamp of....', item );
 		let data = item.time.split( ':' );
 		let dateObj = new Date();
 		dateObj.setHours( data[ 0 ] );
@@ -54,29 +46,24 @@ export default class SchedulerLogic {
 	enqueue() {
 
 		//Cleanup
-		if ( this.curTimeout ) {
-			clearInterval( this.curTimeout );
-		}
+		this.subscribers.forEach( ( element, index, array ) => {
+			if ( element.curTimeout ) {
+				clearInterval( this.curTimeout );
+			}
+		} );
+
 		let diff;
 		let nextItem = this.getNextScheduleItem();
 		if ( diff = this.getTimeDifference( nextItem ) ) {
-			console.log( 'setting new timeout', diff );
-			this.curTimeout = setTimeout( () => this.timeout( nextItem ), diff );
+			this.subscribers.forEach( ( element, index, array ) => {
+				let subscription = diff + element.delay;
+				element.curTimeout = setTimeout( () => element.callback( nextItem ), subscription );
+			} );
 
 		} else {
 			console.log( 'nothing left to do for today' );
 			this.setCmpDateToTomorrow();
 		}
-	}
-
-	timeout( item ) {
-		this.setCmpDateToNow();
-		console.log( 'Scheduler firing' );
-		this.linak.moveTo( item.height, () => {
-			console.log( 'Linak done firing' );
-
-		} );
-		this.enqueue();
 	}
 
 	setCmpDateToNow() {
