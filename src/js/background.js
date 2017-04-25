@@ -1,6 +1,6 @@
+import {dialog, ipcMain} from "electron";
 import SchedulerLogic from "./util/schedulerLogic";
 import Linak from "./util/linakUtil";
-import {dialog} from "electron";
 import Notifier from "node-notifier";
 const namespace = 'ScheduleItem';
 
@@ -26,17 +26,22 @@ export default class Background {
 	init() {
 		let notifier = new Notifier.NotifySend();
 		notifier.notify( {
-			title: 'Foo',
+			title  : 'Foo',
 			message: 'Hello World',
-			icon: __dirname + '/../icons/app-128.png',
+			icon   : __dirname + '/../icons/app-128.png',
 
 			// .. and other notify-send flags:
-			urgency: void 0,
-			time: void 0,
+			urgency : void 0,
+			time    : void 0,
 			category: void 0,
-			hint: void 0,
+			hint    : void 0,
 		} );
-		this.settings.watch( namespace, () => {
+
+		this.scheduler.boot();
+
+		// Listen for async message from renderer process
+		ipcMain.on( 'electron-settings-change', ( event, arg ) => {
+			console.log( 'IPC!! SETIINGS CHANGED!', arg );
 			Notifier.notify( {
 				'title'  : 'My notification',
 				'message': 'Hello, there!'
@@ -44,8 +49,6 @@ export default class Background {
 			this.scheduler.setData( this.settings.get( namespace ) );
 			this.scheduler.enqueue();
 		} );
-
-		this.scheduler.boot();
 	}
 
 }

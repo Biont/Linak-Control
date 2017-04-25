@@ -1,13 +1,13 @@
 Schedule
 <div data-timepicker></div>
 <p class="range-field">
-	<label>
-		Height
-		<input
-			type="range"
-			min="68"
-			max="138"
-			value="<%= this.model.get('height') %>"
-		/>
-	</label>
+	<input
+		id="<%= this.model.get('id') %>"
+		type="range"
+		min="68"
+		max="138"
+		value="<%= this.model.get('height') %>"
+	/>
+	<label for="<%= this.model.get('id') %>">Height</label>
+
 </p>

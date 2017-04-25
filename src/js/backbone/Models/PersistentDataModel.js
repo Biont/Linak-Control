@@ -1,3 +1,4 @@
+import {ipcRenderer, remote} from "electron";
 import Backbone from "backbone";
 import {isUndefined, result} from "underscore";
 
@@ -70,7 +71,7 @@ class PersistentDataModel extends Backbone.Model {
 		if ( options.complete ) {
 			options.complete.call( model, resp );
 		}
-
+		ipcRenderer.send( 'electron-settings-change', resp );
 		return syncDfd && syncDfd.promise();
 	}
 
