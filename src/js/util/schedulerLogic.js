@@ -1,71 +1,102 @@
-import Linak from'./linakUtil.js';
-
+import Linak from "./linakUtil.js";
+import {find} from "underscore";
 
 export default class SchedulerLogic {
-    constructor(schedule, linak) {
-        this.linak = linak || new Linak();
-        this.schedule = schedule;
-        this.cmpDate = this.setCmpDateToNow();
-    }
+	constructor( schedule, linak ) {
+		this.schedule = schedule;
+		this.setData( schedule );
+		this.linak = linak || new Linak();
+		this.cmpDate = this.setCmpDateToNow();
+		console.log( this.schedule );
+	}
 
-    boot() {
+	setData( schedule ) {
+		this.schedule = schedule;
 
-        this.enqueue();
+	}
 
-    }
+	boot() {
 
-    getNextTimeDifference() {
+		return this.enqueue();
 
-        let nextItem = this.schedule.findWhere((model) => {
-            console.log('this', model.getTimeStamp());
-            console.log('cmpDate', this.cmpDate);
-            return model.getTimeStamp() > this.cmpDate;
-        });
-        if (nextItem) {
-            return nextItem.getTimeStamp() - this.cmpDate;
-        }
-        return false;
-    }
+	}
 
-    enqueue() {
+	getTimeDifference( nextItem ) {
 
-        //Cleanup
-        if (this.curTimeout) {
-            clearInterval(this.curTimeout);
-        }
-        let diff;
-        if (diff = this.getNextTimeDifference()) {
-            console.log('setting new timeout', diff);
-            this.curTimeout = setTimeout(() => this.timeout(), diff);
+		console.log( 'NextItem!', nextItem );
+		if ( nextItem ) {
+			return this.getItemTimestamp( nextItem ) - this.cmpDate;
+		}
+		return false;
+	}
 
-        } else {
-            console.log('nothing left to do for today');
-            this.setCmpDateToTomorrow();
-        }
-    }
+	getNextScheduleItem() {
+		console.log( this.schedule );
+		return find( this.schedule, ( model ) => {
+			console.log( 'CALLBACK!' );
+			console.log( 'this', this.getItemTimestamp( model ) );
+			console.log( 'cmpDate', this.cmpDate );
+			return this.getItemTimestamp( model ) > this.cmpDate;
+		} );
+	}
 
-    timeout() {
-        this.setCmpDateToNow();
-        console.log('Scheduler firing');
-        this.enqueue();
-    }
+	getItemTimestamp( item ) {
+		console.log( 'next timestamp of....', item );
+		let data = item.time.split( ':' );
+		let dateObj = new Date();
+		dateObj.setHours( data[ 0 ] );
+		dateObj.setMinutes( data[ 1 ] );
+		dateObj.setSeconds( '00' );
 
-    setCmpDateToNow() {
-        return this.cmpDate = (new Date()).getTime();
-    }
+		return dateObj.getTime();
+	}
 
-    setCmpDateToTomorrow() {
-        this.cmpDate = this.getTomorrowsDate();
-    }
+	enqueue() {
 
-    getTomorrowsDate() {
-        // sleep(1000*60*60*24);
-        // getCurrentDate();
-        let time = new Date();
-        time.setHours('00');
-        time.setMinutes('00');
-        time.setSeconds('00');
-        time.setDate(time.getDate() + 1)
-        return time.getTime();
-    }
+		//Cleanup
+		if ( this.curTimeout ) {
+			clearInterval( this.curTimeout );
+		}
+		let diff;
+		let nextItem = this.getNextScheduleItem();
+		if ( diff = this.getTimeDifference( nextItem ) ) {
+			console.log( 'setting new timeout', diff );
+			this.curTimeout = setTimeout( () => this.timeout( nextItem ), diff );
+
+		} else {
+			console.log( 'nothing left to do for today' );
+			this.setCmpDateToTomorrow();
+		}
+	}
+
+	timeout( item ) {
+		this.setCmpDateToNow();
+		console.log( 'Scheduler firing' );
+		this.linak.moveTo( item.height, () => {
+			console.log( 'Linak done firing' );
+
+		} );
+		this.enqueue();
+	}
+
+	setCmpDateToNow() {
+		return this.cmpDate = (
+			new Date()
+		).getTime();
+	}
+
+	setCmpDateToTomorrow() {
+		this.cmpDate = this.getTomorrowsDate();
+	}
+
+	getTomorrowsDate() {
+		// sleep(1000*60*60*24);
+		// getCurrentDate();
+		let time = new Date();
+		time.setHours( '00' );
+		time.setMinutes( '00' );
+		time.setSeconds( '00' );
+		time.setDate( time.getDate() + 1 );
+		return time.getTime();
+	}
 }

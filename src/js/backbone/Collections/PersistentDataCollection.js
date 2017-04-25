@@ -37,7 +37,7 @@ export default class PersistentDataCollection extends Backbone.Collection {
     }
 
     sync(method, model, options) {
-        const store = require('electron-settings');
+	    const store = require('electron').remote.require('electron-settings');
         let resp, errorMessage;
         const syncDfd = getDeferred();
 

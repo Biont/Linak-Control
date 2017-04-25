@@ -1,7 +1,6 @@
 import AppView from "./backbone/Views/AppView";
-import PersistentDataCollection from "./backbone/Collections/PersistentDataCollection.js";
+import ScheduleCollection from "./backbone/Collections/ScheduleCollection.js";
 import ScheduleItem from "./backbone/Models/ScheduleItem";
-import SchedulerLogic from './util/schedulerLogic.js';
 
 class App {
     /**
@@ -11,7 +10,7 @@ class App {
     }
 
     init() {
-        let schedule = new PersistentDataCollection({
+        let schedule = new ScheduleCollection({
             model: ScheduleItem,
             comparator: function (m) {
                 console.log('sort', m);
@@ -25,9 +24,6 @@ class App {
         });
         schedule.fetch();
         appView.render();
-        console.log(SchedulerLogic);
-        let scheduler = new SchedulerLogic(schedule);
-        scheduler.boot();
         // let linak = new Linak();
         // linak.moveTo( 60 );
     }

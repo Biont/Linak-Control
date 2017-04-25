@@ -1,7 +1,7 @@
-import PersistentDataCollection from './PersistentDataCollection';
+import PersistentDataCollection from "./PersistentDataCollection";
 
-export default class ScheduleCollection extends PersistentDataCollection.extend({}) {
-    getNext() {
-
-    }
+export default class ScheduleCollection extends PersistentDataCollection.extend( {} ) {
+	constructor( args, options ) {
+		super( args, options );
+	}
 };
