@@ -1,28 +1,28 @@
-import Backbone from "backbone";
+import BiontView from "./BiontView";
 
 /**
  * Does nothing but display a text message
  */
-export default class TimePickerView extends Backbone.View {
-    constructor(data, options) {
-        super(data, options);
-        // this.text = data.text;
-    }
+export default class TimePickerView extends BiontView.extend( {} ) {
+	constructor( data, options ) {
+		super( data, options );
+		// this.text = data.text;
+	}
 
-    /**
-     * Very basic render function.
-     * @returns {TextModalView}
-     */
-    render() {
-        super.render();
-        let time = this.model.get('time');
-        this.$el.html('<input id="timepicker_' + this.cid + '" value="' + time + '" class="timepicker" type="time">');
-        $('#timepicker_' + this.cid).pickatime({
-            autoclose: false,
-            twelvehour: false,
-            default: time
-        });
-        return this;
-    }
+	/**
+	 * Very basic render function.
+	 * @returns {TimePickerView}
+	 */
+	render() {
+		super.render();
+		let time = this.model.get( 'time' ),
+			args = {
+				autoclose : false,
+				twelvehour: false,
+				default   : time
+			};
+		$('input[type="time"]',this.$el).pickatime( args );
+		return this;
+	}
 
 }

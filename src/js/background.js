@@ -15,7 +15,6 @@ export default class Background {
 			{
 				delay   : 0,
 				callback: ( item ) => {
-					console.log( 'hi!' )
 					this.linak.moveTo( item.height, () => {
 						console.log( 'Linak done firing' );
 					} );
