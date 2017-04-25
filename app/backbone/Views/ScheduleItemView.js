@@ -85,8 +85,7 @@ var ScheduleItemView = function (_BiontView$extend) {
 }(_BiontView2.default.extend({
     events: {
         'click [data-action]': 'onButtonClick',
-        'click [data-action="save"]': 'save',
-        'change input': 'onChange'
+        'click [data-action="save"]': 'save'
     }
 }));
 

@@ -31,115 +31,154 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var tplDir = '../../tpl/';
 
 require.extensions['.ejs'] = function (module) {
-	var filename = module.filename;
-	var options = { filename: filename, client: true, compileDebug: true };
-	var template = _fs2.default.readFileSync(filename).toString().replace(/^\uFEFF/, '');
-	var fn = _ejs2.default.compile(template, options);
-	return module._compile('module.exports = ' + fn.toString() + ';', filename);
+    var filename = module.filename;
+    var options = { filename: filename, client: true, compileDebug: true };
+    var template = _fs2.default.readFileSync(filename).toString().replace(/^\uFEFF/, '');
+    var fn = _ejs2.default.compile(template, options);
+    return module._compile('module.exports = ' + fn.toString() + ';', filename);
 };
 
 var BiontView = function (_Backbone$View$extend) {
-	_inherits(BiontView, _Backbone$View$extend);
+    _inherits(BiontView, _Backbone$View$extend);
 
-	_createClass(BiontView, [{
-		key: "template",
+    _createClass(BiontView, [{
+        key: "template",
 
-		/**
-   * Make all BRViews use our own TemplateLoader
-   *
-   * @returns {*}
-   */
-		get: function get() {
-			return this.getTemplate();
-		}
-	}]);
+        /**
+         * Make all BRViews use our own TemplateLoader
+         *
+         * @returns {*}
+         */
+        get: function get() {
+            return this.getTemplate();
+        }
+    }]);
 
-	function BiontView(data, options) {
-		_classCallCheck(this, BiontView);
+    function BiontView(data, options) {
+        _classCallCheck(this, BiontView);
 
-		var _this = _possibleConstructorReturn(this, _Backbone$View$extend.call(this, data, options));
+        var _this = _possibleConstructorReturn(this, _Backbone$View$extend.call(this, data, options));
 
-		if (_this.constructor.name === 'BiontView') {
-			throw new TypeError("Cannot construct BiontView instances directly");
-		}
-		return _this;
-	}
+        if (_this.constructor.name === 'BiontView') {
+            throw new TypeError("Cannot construct BiontView instances directly");
+        }
+        return _this;
+    }
 
-	/**
-  * Retrieves a template from the DOM
-  *
-  * @param tplOverride
-  * @returns {string}
-  */
-
-
-	BiontView.prototype.getTemplate = function getTemplate(tplOverride) {
-
-		var tpl = void 0;
-
-		/**
-   * Try to find a given override first
-   */
-		tplOverride = __dirname + '/' + tplDir + tplOverride + '.ejs';
-
-		if (tplOverride && _fs2.default.existsSync(tplOverride)) {
-			return require(tplOverride);
-		}
-
-		/**
-   * Walk up the prototype chain to find matching templates
-   */
-		var curObject = this;
-		while (curObject && curObject.constructor.name !== 'BiontView') {
-			var tplModule = __dirname + '/' + tplDir + curObject.constructor.name + '.ejs';
-			if (_fs2.default.existsSync(tplModule)) {
-				return require(tplModule);
-			}
-			curObject = Object.getPrototypeOf(curObject);
-		}
-
-		console.error('Could not find template for View ' + this.constructor.name);
-		return function () {
-			return '<div class="tplError">MISSING TEMPLATE</div>';
-		};
-	};
-
-	/**
-  * Very basic render function.
-  * @returns {BiontView}
-  */
+    /**
+     * Retrieves a template from the DOM
+     *
+     * @param tplOverride
+     * @returns {string}
+     */
 
 
-	BiontView.prototype.render = function render() {
-		var data = this.model ? this.model.toJSON() : {};
-		_.extend(data, _TemplateHelpers2.default);
-		this.$el.html(this.template(data));
-		return this;
-	};
+    BiontView.prototype.getTemplate = function getTemplate(tplOverride) {
 
-	BiontView.prototype.dump = function dump() {
-		console.log(this.model);
-		return this.model.toJSON();
-	};
+        var tpl = void 0;
 
-	/**
-  * Assigns a selector within the template to a specific subview, which will then get rendered
-  * @param view
-  * @param selector
-  */
+        /**
+         * Try to find a given override first
+         */
+        tplOverride = __dirname + '/' + tplDir + tplOverride + '.ejs';
+
+        if (tplOverride && _fs2.default.existsSync(tplOverride)) {
+            return require(tplOverride);
+        }
+
+        /**
+         * Walk up the prototype chain to find matching templates
+         */
+        var curObject = this;
+        while (curObject && curObject.constructor.name !== 'BiontView') {
+            var tplModule = __dirname + '/' + tplDir + curObject.constructor.name + '.ejs';
+            if (_fs2.default.existsSync(tplModule)) {
+                return require(tplModule);
+            }
+            curObject = Object.getPrototypeOf(curObject);
+        }
+
+        console.error('Could not find template for View ' + this.constructor.name);
+        return function () {
+            return '<div class="tplError">MISSING TEMPLATE</div>';
+        };
+    };
+
+    /**
+     * Very basic render function.
+     * @returns {BiontView}
+     */
 
 
-	BiontView.prototype.assign = function assign(view, selector) {
-		selector = selector || '[data-subview="' + view.constructor.name + '"]';
+    BiontView.prototype.render = function render() {
+        var _this2 = this;
 
-		var $el = void 0;
+        var data = this.model ? this.model.toJSON() : {};
+        _.extend(data, _TemplateHelpers2.default);
 
-		if ($el = this.$(selector, this.$el)) {
-			view.setElement($el).render();
-		}
-	};
+        this.$el.html(this.template(data));
 
-	return BiontView;
+        $('[data-bind]', this.$el).each(function (idx, obj) {
+            var $this = $(obj),
+                data = $this.data();
+            if (!data.bind) {
+                console.log('empty tag');
+                return;
+            }
+            switch ($this.prop('tagName')) {
+                case 'INPUT':
+                    _this2.bindInput($this, data.bind);
+                    break;
+                default:
+                    _this2.bindDefault($this, data.bind);
+                    break;
+
+            }
+        });
+        return this;
+    };
+
+    BiontView.prototype.bindDefault = function bindDefault($element, attr) {
+        $element.html(this.model.get(attr));
+        this.listenTo(this.model, 'change', function (model) {
+            return $element.html(model.get(attr));
+        });
+    };
+
+    BiontView.prototype.bindInput = function bindInput($element, attr) {
+        var _this3 = this;
+
+        $element.change(function () {
+            return _this3.model.set(attr, $element.val());
+        });
+        this.listenTo(this.model, 'change', function (model) {
+            return $element.val(model.get(attr));
+        });
+    };
+
+    BiontView.prototype.dump = function dump() {
+        console.log(this.model);
+        return this.model.toJSON();
+    };
+
+    /**
+     * Assigns a selector within the template to a specific subview, which will then get rendered
+     * @param view
+     * @param selector
+     */
+
+
+    BiontView.prototype.assign = function assign(view, selector) {
+        selector = selector || '[data-subview="' + view.constructor.name + '"]';
+
+        var $el = void 0;
+
+        if ($el = this.$(selector, this.$el)) {
+            view.setElement($el).render();
+        }
+    };
+
+    return BiontView;
 }(_backbone2.default.View.extend({}));
 
 exports.default = BiontView;

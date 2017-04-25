@@ -5,100 +5,128 @@ import ejs from "ejs";
 import TemplateHelpers from "../TemplateHelpers";
 const tplDir = '../../tpl/';
 
-require.extensions[ '.ejs' ] = function( module ) {
-	let filename = module.filename;
-	let options = { filename: filename, client: true, compileDebug: true };
-	let template = fs.readFileSync( filename ).toString().replace( /^\uFEFF/, '' );
-	let fn = ejs.compile( template, options );
-	return module._compile( 'module.exports = ' + fn.toString() + ';', filename );
+require.extensions['.ejs'] = function (module) {
+    let filename = module.filename;
+    let options = {filename: filename, client: true, compileDebug: true};
+    let template = fs.readFileSync(filename).toString().replace(/^\uFEFF/, '');
+    let fn = ejs.compile(template, options);
+    return module._compile('module.exports = ' + fn.toString() + ';', filename);
 };
 
-export default class BiontView extends Backbone.View.extend( {} ) {
-	/**
-	 * Make all BRViews use our own TemplateLoader
-	 *
-	 * @returns {*}
-	 */
-	get template() {
-		return this.getTemplate()
-	}
+export default class BiontView extends Backbone.View.extend({}) {
+    /**
+     * Make all BRViews use our own TemplateLoader
+     *
+     * @returns {*}
+     */
+    get template() {
+        return this.getTemplate()
+    }
 
-	constructor( data, options ) {
-		super( data, options );
-		if ( this.constructor.name === 'BiontView' ) {
-			throw new TypeError( "Cannot construct BiontView instances directly" );
-		}
-	}
+    constructor(data, options) {
+        super(data, options);
+        if (this.constructor.name === 'BiontView') {
+            throw new TypeError("Cannot construct BiontView instances directly");
+        }
+    }
 
-	/**
-	 * Retrieves a template from the DOM
-	 *
-	 * @param tplOverride
-	 * @returns {string}
-	 */
-	getTemplate( tplOverride ) {
+    /**
+     * Retrieves a template from the DOM
+     *
+     * @param tplOverride
+     * @returns {string}
+     */
+    getTemplate(tplOverride) {
 
-		let tpl;
+        let tpl;
 
-		/**
-		 * Try to find a given override first
-		 */
-		tplOverride = __dirname + '/' + tplDir + tplOverride + '.ejs';
+        /**
+         * Try to find a given override first
+         */
+        tplOverride = __dirname + '/' + tplDir + tplOverride + '.ejs';
 
-		if ( tplOverride && (
-				fs.existsSync( tplOverride )
-			) ) {
-			return require( tplOverride );
-		}
+        if (tplOverride && (
+                fs.existsSync(tplOverride)
+            )) {
+            return require(tplOverride);
+        }
 
-		/**
-		 * Walk up the prototype chain to find matching templates
-		 */
-		let curObject = this;
-		while ( curObject && curObject.constructor.name !== 'BiontView' ) {
-			let tplModule = __dirname + '/' + tplDir + curObject.constructor.name + '.ejs';
-			if ( fs.existsSync( tplModule ) ) {
-				return require( tplModule );
-			}
-			curObject = Object.getPrototypeOf( curObject );
-		}
+        /**
+         * Walk up the prototype chain to find matching templates
+         */
+        let curObject = this;
+        while (curObject && curObject.constructor.name !== 'BiontView') {
+            let tplModule = __dirname + '/' + tplDir + curObject.constructor.name + '.ejs';
+            if (fs.existsSync(tplModule)) {
+                return require(tplModule);
+            }
+            curObject = Object.getPrototypeOf(curObject);
+        }
 
-		console.error( 'Could not find template for View ' + this.constructor.name );
-		return function() {
-			return '<div class="tplError">MISSING TEMPLATE</div>'
-		};
-	}
+        console.error('Could not find template for View ' + this.constructor.name);
+        return function () {
+            return '<div class="tplError">MISSING TEMPLATE</div>'
+        };
+    }
 
-	/**
-	 * Very basic render function.
-	 * @returns {BiontView}
-	 */
-	render() {
-		let data = this.model ? this.model.toJSON() : {};
-		_.extend( data, TemplateHelpers );
-		this.$el.html( this.template( data ) );
-		return this;
-	}
+    /**
+     * Very basic render function.
+     * @returns {BiontView}
+     */
+    render() {
+        let data = this.model ? this.model.toJSON() : {};
+        _.extend(data, TemplateHelpers);
 
-	dump() {
-		console.log( this.model );
-		return this.model.toJSON();
-	}
+        this.$el.html(this.template(data));
 
-	/**
-	 * Assigns a selector within the template to a specific subview, which will then get rendered
-	 * @param view
-	 * @param selector
-	 */
-	assign( view, selector ) {
-		selector = selector || '[data-subview="' + view.constructor.name + '"]';
+        $('[data-bind]', this.$el).each((idx, obj) => {
+            let $this = $(obj), data = $this.data();
+            if (!data.bind) {
+                console.log('empty tag');
+                return;
+            }
+            switch ($this.prop('tagName')) {
+                case 'INPUT':
+                    this.bindInput($this, data.bind);
+                    break;
+                default:
+                    this.bindDefault($this, data.bind);
+                    break;
 
-		let $el;
+            }
+        });
+        return this;
+    }
 
-		if ( $el = this.$( selector, this.$el ) ) {
-			view.setElement( $el ).render();
+    bindDefault($element, attr) {
+        $element.html(this.model.get(attr));
+        this.listenTo(this.model, 'change', (model) => $element.html(model.get(attr)));
+    }
 
-		}
-	}
+    bindInput($element, attr) {
+        $element.change(() => this.model.set(attr, $element.val()));
+        this.listenTo(this.model, 'change', (model) => $element.val(model.get(attr)));
+    }
+
+    dump() {
+        console.log(this.model);
+        return this.model.toJSON();
+    }
+
+    /**
+     * Assigns a selector within the template to a specific subview, which will then get rendered
+     * @param view
+     * @param selector
+     */
+    assign(view, selector) {
+        selector = selector || '[data-subview="' + view.constructor.name + '"]';
+
+        let $el;
+
+        if ($el = this.$(selector, this.$el)) {
+            view.setElement($el).render();
+
+        }
+    }
 
 }

@@ -5,7 +5,7 @@ export default class ScheduleItemView extends BiontView.extend({
     events: {
         'click [data-action]': 'onButtonClick',
         'click [data-action="save"]': 'save',
-        'change input': 'onChange'
+        // 'change input': 'onChange'
     }
 }) {
     constructor(data, options) {
