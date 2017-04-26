@@ -64,9 +64,11 @@ var AppView = function (_BiontView$extend) {
     }
 
     AppView.prototype.open = function open() {
-        var time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        var time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            height = 80;
+
         var newItem = new _ScheduleItem2.default({
-            time: time
+            time: time, height: height
         });
         var modal = new _ModalView2.default({
             header: 'Create new Schedule Item',

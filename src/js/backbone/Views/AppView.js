@@ -30,9 +30,10 @@ export default class AppView extends BiontView.extend({
     open() {
         let time = (
             new Date()
-        ).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+        ).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}), height = 80;
+
         let newItem = new ScheduleItem({
-            time
+            time, height
         });
         let modal = new ModalView({
                 header: 'Create new Schedule Item',
