@@ -74,6 +74,9 @@ export default class PersistentDataCollection extends Backbone.Collection {
         return syncDfd && syncDfd.promise();
     }
 
+    /**
+     * Fetch remote data.
+     */
     fetch() {
         super.fetch(
             {
@@ -82,19 +85,27 @@ export default class PersistentDataCollection extends Backbone.Collection {
                 merge: true,
                 data: this.queryArgs,
                 success: () => {
-                    console.log('fetch', arguments);
                     this.checkEmpty();
                 }
             }
         );
     }
 
+    /**
+     * Notify listeners if the collection is empty.
+     */
     checkEmpty() {
         if (this.isEmpty()) {
             this.trigger('empty', this)
         }
     }
 
+    /**
+     * This will be the name of the event that is passed to the main process.
+     * The main process will then reply with a new event with this name so we can catch it here.
+     *
+     * @returns {string}
+     */
     getReplyContext() {
         return 'asyncSettingsReply:' + this.constructor.name;
     }
