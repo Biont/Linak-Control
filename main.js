@@ -17,24 +17,7 @@ class Main {
 
 			let contextMenu = Menu.buildFromTemplate( [
 				{
-					label: 'Item1',
-					type : 'radio',
-					icon : iconPath
-				},
-				{
-					label  : 'Item2',
-					submenu: [
-						{ label: 'submenu1' },
-						{ label: 'submenu2' }
-					]
-				},
-				{
-					label  : 'Item3',
-					type   : 'radio',
-					checked: true
-				},
-				{
-					label      : 'Show',
+					label      : 'Show Window',
 					accelerator: 'Alt+Command+I',
 					click      : () => {
 						win.show();
