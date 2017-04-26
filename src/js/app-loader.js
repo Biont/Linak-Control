@@ -1,6 +1,6 @@
-const MainApp = require('./app.js');
+import MainApp from'./app.js';
 const App = new MainApp();
-$(document).ready(() => {
+jQuery(document).ready(() => {
     App.init();
     $('.collapsible').collapsible();
 });
