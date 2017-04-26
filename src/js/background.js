@@ -72,7 +72,7 @@ export default class Background {
 					response = {};
 					break;
 			}
-			console.log( settings.get( namespace ) );
+			console.log( response );
 			this.scheduler.setData( settings.get( namespace ) );
 			this.scheduler.enqueue();
 
@@ -81,7 +81,6 @@ export default class Background {
 	}
 
 	sendNotification( data ) {
-		console.log( this.notificationSubscribers );
 		console.log( 'sending notifications' );
 		this.notificationSubscribers.forEach( ( element, index, array ) => {
 			element.send( 'notify', data );

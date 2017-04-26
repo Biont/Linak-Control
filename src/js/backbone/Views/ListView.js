@@ -13,9 +13,6 @@ export default class ListView extends BiontView.extend({
         super(data, options);
         this.view = data.view || ItemView;
         this.listenTo(this.collection, "sync", this.render);
-        this.listenTo(this.collection, "update", ()=>{
-            console.log('What?',arguments);
-        });
         // this.listenTo(this.collection, "change", this.render);
         this._views = new Map();
         this.$el.empty();
@@ -37,10 +34,6 @@ export default class ListView extends BiontView.extend({
         }
         // let models = this.collection.filter(this.filterItem.bind(this));
         let models = this.collection.models;
-        console.log( 'ListView Collection');
-        console.log( this.collection);
-        console.log( this.collection.models);
-        console.log(models);
         this.removeObsoleteViews(models);
 
         //TODO This is an example for how we could sort the models before rendering
