@@ -15,12 +15,6 @@ export default class SchedulerLogic {
 
     }
 
-    boot() {
-
-        return this.enqueue();
-
-    }
-
     scheduleEmpty() {
         return !this.schedule || Object.keys(this.schedule).length === 0 && this.schedule.constructor === Object;
     }

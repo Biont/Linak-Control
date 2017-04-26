@@ -51,7 +51,7 @@ export default class Background {
 		ipcMain.on( 'subscribe-notifications', ( event ) => {
 			this.notificationSubscribers.push( event.sender );
 		} );
-		this.scheduler.boot();
+		this.scheduler.enqueue();
 
 		// Listen for async message from renderer process
 		// this.settings.watch( namespace, ( event, arg ) => {
