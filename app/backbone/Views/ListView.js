@@ -31,7 +31,8 @@ var ListView = function (_BiontView$extend) {
 
         _this.view = data.view || _ScheduleItemView2.default;
         _this.listenTo(_this.collection, "sync", _this.render);
-        // this.listenTo(this.collection, "change", this.render);
+        // this.listenTo(this.collection, "sort", this.render);
+        _this.listenTo(_this.collection, "change", _this.render);
         _this._views = new Map();
         _this.$el.empty();
         return _this;
@@ -45,6 +46,7 @@ var ListView = function (_BiontView$extend) {
     ListView.prototype.render = function render() {
         var _this2 = this;
 
+        console.log('listview rendering');
         /**
          * Don't render if the list cannot be seen.
          * Keep an eye on this and see if it causes problems
@@ -74,7 +76,7 @@ var ListView = function (_BiontView$extend) {
         // debugger;
 
         var curView = void 0;
-        models.forEach(function (item) {
+        models.forEach(function (item, index, array) {
             if (!_this2._views.has(item)) {
                 var viewArgs = {
                     tagName: 'li',
@@ -98,7 +100,6 @@ var ListView = function (_BiontView$extend) {
 
                 $el.css('display', 'none').slideDown(275);
             }
-
             curView = _this2._views.get(item);
         });
         return this;

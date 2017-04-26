@@ -86,6 +86,7 @@ export default class PersistentDataCollection extends Backbone.Collection {
                 data: this.queryArgs,
                 success: () => {
                     this.checkEmpty();
+                    this.sort();
                 }
             }
         );

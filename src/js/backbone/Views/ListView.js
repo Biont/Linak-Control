@@ -13,7 +13,8 @@ export default class ListView extends BiontView.extend({
         super(data, options);
         this.view = data.view || ItemView;
         this.listenTo(this.collection, "sync", this.render);
-        // this.listenTo(this.collection, "change", this.render);
+        // this.listenTo(this.collection, "sort", this.render);
+        this.listenTo(this.collection, "change", this.render);
         this._views = new Map();
         this.$el.empty();
     }
@@ -22,6 +23,7 @@ export default class ListView extends BiontView.extend({
      * Handle output
      */
     render() {
+        console.log('listview rendering');
         /**
          * Don't render if the list cannot be seen.
          * Keep an eye on this and see if it causes problems
@@ -51,7 +53,7 @@ export default class ListView extends BiontView.extend({
         // debugger;
 
         let curView;
-        models.forEach((item) => {
+        models.forEach((item, index, array) => {
             if (!this._views.has(item)) {
                 let viewArgs = {
                     tagName: 'li',
@@ -75,7 +77,6 @@ export default class ListView extends BiontView.extend({
 
                 $el.css('display', 'none').slideDown(275);
             }
-
             curView = this._views.get(item);
         });
         return this;
