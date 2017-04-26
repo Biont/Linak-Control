@@ -13,7 +13,6 @@ class App {
 	init() {
 		this.listenToNotifications();
 
-		debugger;
 		let schedule = new ScheduleCollection( [], {
 			model     : ScheduleItem,
 			comparator: function( m ) {
@@ -26,8 +25,6 @@ class App {
 		} );
 		schedule.fetch();
 		appView.render();
-		// let linak = new Linak();
-		// linak.moveTo( 60 );
 	}
 
 	listenToNotifications() {
