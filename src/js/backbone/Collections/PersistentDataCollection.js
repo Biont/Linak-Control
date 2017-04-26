@@ -17,13 +17,13 @@ function getDeferred() {
  */
 export default class PersistentDataCollection extends Backbone.Collection {
 
-	constructor( args, options ) {
-		super( args, options );
-		this.model = args.model || Backbone.Model;
-		this.comparator = args.comparator;
-		this.endpoint = args.endpoint;
-		if ( args.requestParams ) {
-			this.requestParams = args.requestParams;
+	constructor( models, options ) {
+		super( models, options );
+		this.model = options.model || Backbone.Model;
+		this.comparator = options.comparator;
+		this.endpoint = options.endpoint;
+		if ( options.requestParams ) {
+			this.requestParams = options.requestParams;
 
 		}
 	}
@@ -34,11 +34,14 @@ export default class PersistentDataCollection extends Backbone.Collection {
 
 		let key = isUndefined( model.id ) ? this.model.name : model.constructor.name + '.' + model.cid;
 		let data = model.toJSON();
+		model.trigger( 'request', model, syncDfd, options );
 		ipcRenderer.send( 'electron-settings-change', { method, key, data, replyContext: this.getReplyContext() } );
 
 		// add compatibility with $.ajax
 		// always execute callback for success and error
 		ipcRenderer.once( this.getReplyContext(), ( event, result ) => {
+			console.log( result );
+
 			if ( result ) {
 				console.log( result );
 				console.log( model );
@@ -63,8 +66,8 @@ export default class PersistentDataCollection extends Backbone.Collection {
 					options.complete.call( model, result );
 				}
 			} else {
-				errorMessage = 'Record Not Found';
-
+				let errorMessage = 'Record Not Found';
+				console.log( result );
 				if ( options.error ) {
 					options.error.call( model, errorMessage, options );
 				}
@@ -93,6 +96,7 @@ export default class PersistentDataCollection extends Backbone.Collection {
 	}
 
 	checkEmpty() {
+		console.log( 'checkEmpty' );
 		if ( this.isEmpty() ) {
 			console.log( 'Collection is now empty' );
 			this.trigger( 'empty', this )

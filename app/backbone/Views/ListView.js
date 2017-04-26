@@ -25,18 +25,17 @@ var ListView = function (_BiontView$extend) {
      * Initialize this class
      */
     function ListView(data, options) {
+        var _arguments = arguments;
+
         _classCallCheck(this, ListView);
 
         var _this = _possibleConstructorReturn(this, _BiontView$extend.call(this, data, options));
 
         _this.view = data.view || _ScheduleItemView2.default;
-        _this.filterStatus = data.filterStatus || [];
-
-        if (data.rowActionsView) {
-            _this.rowActionsView = data.rowActionsView;
-        }
-
         _this.listenTo(_this.collection, "sync", _this.render);
+        _this.listenTo(_this.collection, "update", function () {
+            console.log('What?', _arguments);
+        });
         // this.listenTo(this.collection, "change", this.render);
         _this._views = new Map();
         _this.$el.empty();
@@ -61,7 +60,11 @@ var ListView = function (_BiontView$extend) {
         if (this.collection.isEmpty()) {
             return this;
         }
-        var models = this.collection.filter(this.filterItem.bind(this));
+        // let models = this.collection.filter(this.filterItem.bind(this));
+        var models = this.collection.models;
+        console.log('ListView Collection');
+        console.log(this.collection);
+        console.log(this.collection.models);
         console.log(models);
         this.removeObsoleteViews(models);
 

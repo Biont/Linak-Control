@@ -12,13 +12,10 @@ export default class ListView extends BiontView.extend({
     constructor(data, options) {
         super(data, options);
         this.view = data.view || ItemView;
-        this.filterStatus = data.filterStatus || [];
-
-        if (data.rowActionsView) {
-            this.rowActionsView = data.rowActionsView;
-        }
-
         this.listenTo(this.collection, "sync", this.render);
+        this.listenTo(this.collection, "update", ()=>{
+            console.log('What?',arguments);
+        });
         // this.listenTo(this.collection, "change", this.render);
         this._views = new Map();
         this.$el.empty();
@@ -38,7 +35,11 @@ export default class ListView extends BiontView.extend({
         if (this.collection.isEmpty()) {
             return this;
         }
-        let models = this.collection.filter(this.filterItem.bind(this));
+        // let models = this.collection.filter(this.filterItem.bind(this));
+        let models = this.collection.models;
+        console.log( 'ListView Collection');
+        console.log( this.collection);
+        console.log( this.collection.models);
         console.log(models);
         this.removeObsoleteViews(models);
 

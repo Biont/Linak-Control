@@ -34,18 +34,19 @@ class Main {
 					checked: true
 				},
 				{
-					label      : 'Toggle DevTools',
+					label      : 'Show',
 					accelerator: 'Alt+Command+I',
 					click      : () => {
-						let win = getWindow();
 						win.show();
-						win.toggleDevTools();
 					}
 				},
 				{
 					label      : 'Quit',
 					accelerator: 'Command+Q',
-					click      : () => app.quit()
+					click      : () => {
+						app.isQuiting = true;
+						app.quit()
+					}
 				}
 			] );
 			this.tray.setToolTip( 'This is my application.' );
@@ -88,7 +89,7 @@ class Main {
 		} );
 
 		(
-			new Background.default( )
+			new Background.default()
 		).init();
 
 	}
@@ -109,6 +110,19 @@ class Main {
 		} ) );
 		// Open the DevTools.
 		win.webContents.openDevTools();
+
+		win.on( 'minimize', function( event ) {
+			event.preventDefault();
+			win.hide();
+		} );
+
+		win.on( 'close', function( event ) {
+			if ( !app.isQuiting ) {
+				event.preventDefault()
+				win.hide();
+			}
+			return false;
+		} );
 
 		// Emitted when the window is closed.
 		win.on( 'closed', () => {

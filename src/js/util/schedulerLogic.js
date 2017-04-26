@@ -5,12 +5,13 @@ export default class SchedulerLogic {
 		this.schedule = schedule;
 		this.setData( schedule );
 		this.subscribers = subscribers;
-		this.cmpDate = this.setCmpDateToNow();
 		console.log( this.schedule );
 	}
 
 	setData( schedule ) {
+		console.log( schedule );
 		this.schedule = schedule;
+		this.cmpDate = this.setCmpDateToNow();
 
 	}
 
@@ -18,6 +19,10 @@ export default class SchedulerLogic {
 
 		return this.enqueue();
 
+	}
+
+	scheduleEmpty() {
+		return !this.schedule || Object.keys( this.schedule ).length === 0 && obj.constructor === Object;
 	}
 
 	getTimeDifference( nextItem ) {
@@ -35,7 +40,7 @@ export default class SchedulerLogic {
 
 	getItemTimestamp( item ) {
 		let data = item.time.split( ':' );
-		let dateObj = new Date();
+		let dateObj = new Date( this.cmpDate );
 		dateObj.setHours( data[ 0 ] );
 		dateObj.setMinutes( data[ 1 ] );
 		dateObj.setSeconds( '00' );
@@ -44,13 +49,11 @@ export default class SchedulerLogic {
 	}
 
 	enqueue() {
-
-		//Cleanup
-		this.subscribers.forEach( ( element, index, array ) => {
-			if ( element.curTimeout ) {
-				clearInterval( this.curTimeout );
-			}
-		} );
+		if ( this.scheduleEmpty() ) {
+			console.log( 'Nothing on schedule. Phew!   ...wait, is this good?' );
+			return;
+		}
+		this.clearTimeouts();
 
 		let diff;
 		let nextItem = this.getNextScheduleItem();
@@ -59,10 +62,13 @@ export default class SchedulerLogic {
 				let subscription = diff + element.delay;
 				element.curTimeout = setTimeout( () => element.callback( nextItem ), subscription );
 			} );
-
+			this.privTimeout = setTimeout( () => {
+				this.enqueue()
+			}, diff );
 		} else {
 			console.log( 'nothing left to do for today' );
 			this.setCmpDateToTomorrow();
+			this.enqueue();
 		}
 	}
 
@@ -70,6 +76,19 @@ export default class SchedulerLogic {
 		return this.cmpDate = (
 			new Date()
 		).getTime();
+	}
+
+	clearTimeouts() {
+		//Cleanup
+		if ( this.privTimeout ) {
+			clearTimeout( this.privTimeout );
+
+		}
+		this.subscribers.forEach( ( element, index, array ) => {
+			if ( element.curTimeout ) {
+				clearTimeout( element.curTimeout );
+			}
+		} );
 	}
 
 	setCmpDateToTomorrow() {
