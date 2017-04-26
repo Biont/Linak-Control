@@ -45,38 +45,10 @@ export default class AppView extends BiontView.extend( {
 		);
 
 		modal.render();
-		this.listenTo( modal, 'remove', function() {
-			console.log( 'wooo' );
+		this.listenTo( modal, 'remove:button', function() {
 			newItem.save();
 			this.collection.fetch();
 		} );
-		//
-		// this.collection.create( {
-		// 		time: 'hurrrrr'
-		// 	},
-		// 	{
-		// 		wait   : true,
-		// 		//TODO decouple from $author, $email and then move this in a separate class method
-		// 		success: ( model, collection, raw ) => {
-		// 			console.log( arguments );
-		// 			// $author.val( "" );
-		// 			// $email.val( "" );
-		// 			// $content.val( "" );
-		//
-		// 			// let alert = new AlertBoxView( {
-		// 			// 	'messageText'    : TemplateHelpers._e(
-		// 			// 		'Your question has been posted and is awaiting moderation.' ),
-		// 			// 	'closeButtonText': 'OK',
-		// 			// 	// 'autoClose'      : 5000
-		// 			// } );
-		// 			// alert.render();
-		//
-		// 		},
-		// 		error  : function( model, response ) {
-		// 			console.log( arguments );
-		// 			console.trace();
-		// 		}
-		// 	} );
 	}
 
 	deleteAll() {
