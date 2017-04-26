@@ -30,7 +30,6 @@ export default class PersistentDataCollection extends Backbone.Collection {
 
     sync(method, model, options) {
         const syncDfd = getDeferred();
-        console.log(arguments);
 
         let key = isUndefined(model.id) ? this.model.name : model.constructor.name + '.' + model.cid;
         let data = model.toJSON();
@@ -40,11 +39,8 @@ export default class PersistentDataCollection extends Backbone.Collection {
         // add compatibility with $.ajax
         // always execute callback for success and error
         ipcRenderer.once(this.getReplyContext(), (event, result) => {
-            console.log(result);
 
             if (result) {
-                console.log(result);
-                console.log(model);
                 /**
                  * When fetching the entire collection,
                  * we'll receive an array-like object which needs to be converted to a proper array
@@ -55,7 +51,6 @@ export default class PersistentDataCollection extends Backbone.Collection {
                         return [value];
                     });
                 }
-                console.log('got result', result);
                 syncDfd.resolve();
 
                 if (options.success) {
@@ -67,7 +62,6 @@ export default class PersistentDataCollection extends Backbone.Collection {
                 }
             } else {
                 let errorMessage = 'Record Not Found';
-                console.log(result);
                 if (options.error) {
                     options.error.call(model, errorMessage, options);
                 }
@@ -97,7 +91,6 @@ export default class PersistentDataCollection extends Backbone.Collection {
 
     checkEmpty() {
         if (this.isEmpty()) {
-            console.log('Collection is now empty');
             this.trigger('empty', this)
         }
     }
