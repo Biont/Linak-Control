@@ -69,6 +69,7 @@ var AppView = function (_BiontView$extend) {
             time: time
         });
         var modal = new _ModalView2.default({
+            header: 'Create new Schedule Item',
             closeBtnText: 'Save',
             subViews: {
                 content: new _ScheduleFormView2.default({
@@ -89,6 +90,7 @@ var AppView = function (_BiontView$extend) {
         var _this2 = this;
 
         var confirm = new _ConfirmView2.default({
+            header: 'Are you sure?',
             subViews: {
                 content: new _TextView2.default({
                     text: 'This will wipe ALL application data. Are you sure?'

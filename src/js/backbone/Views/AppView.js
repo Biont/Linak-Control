@@ -35,6 +35,7 @@ export default class AppView extends BiontView.extend({
             time
         });
         let modal = new ModalView({
+                header: 'Create new Schedule Item',
                 closeBtnText: 'Save',
                 subViews: {
                     content: new ScheduleFormView({
@@ -55,6 +56,7 @@ export default class AppView extends BiontView.extend({
     deleteAll() {
 
         let confirm = new ConfirmView({
+                header: 'Are you sure?',
                 subViews: {
                     content: new TextView({
                         text: 'This will wipe ALL application data. Are you sure?'

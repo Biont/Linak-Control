@@ -55,6 +55,7 @@ export default class ConfirmView extends ModalView.extend({
      */
     render() {
         let data = {
+            header: this.header,
             closeBtnText: this.closeBtnText,
             confirmBtnText: this.confirmBtnText
         };

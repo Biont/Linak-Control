@@ -16,6 +16,7 @@ export default class ModalView extends BiontView.extend({
     constructor(data, options) {
         super(data, options);
 
+        this.header = data.header || false;
         this.closeBtnText = data.closeBtnText || 'OK';
 
         jQuery('body').append(this.$el);
@@ -50,6 +51,7 @@ export default class ModalView extends BiontView.extend({
      */
     render() {
         let data = {
+            header: this.header,
             closeBtnText: this.closeBtnText
         };
         this.$el.html(this.template(data));
