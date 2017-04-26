@@ -28,9 +28,9 @@ build/Release
 .bak/node_modules
 app/node_modules
 
+/app/**/*.js
+/app/**/*.map
 /app/backbone/*
-/app/app.js
-/app/main.js
 
 # OSX
 .DS_Store
