@@ -22,7 +22,7 @@ export default class SchedulerLogic {
     }
 
     scheduleEmpty() {
-        return !this.schedule || Object.keys(this.schedule).length === 0 && obj.constructor === Object;
+        return !this.schedule || Object.keys(this.schedule).length === 0 && this.schedule.constructor === Object;
     }
 
     getTimeDifference(nextItem) {
