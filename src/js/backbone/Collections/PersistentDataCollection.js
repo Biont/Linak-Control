@@ -29,10 +29,11 @@ export default class PersistentDataCollection extends Backbone.Collection {
 	}
 
 	sync( method, model, options ) {
-		const store = require( 'electron' ).remote.require( 'electron-settings' );
+		const store =require( 'electron-settings' );
 		let resp, errorMessage;
 		const syncDfd = getDeferred();
-
+		console.log( arguments );
+		console.log( arguments );
 		try {
 			switch ( method ) {
 				case 'read':
@@ -41,10 +42,10 @@ export default class PersistentDataCollection extends Backbone.Collection {
 				case 'create':
 				case 'patch':
 				case 'update':
-					resp = store.set( model );
+					resp = store.set( model.constructor.name + '.' + model.cid, model );
 					break;
 				case 'delete':
-					resp = store.delete( model );
+					resp = store.delete( model.constructor.name + '.' + model.cid );
 					break;
 			}
 
@@ -82,7 +83,6 @@ export default class PersistentDataCollection extends Backbone.Collection {
 		if ( options.complete ) {
 			options.complete.call( model, resp );
 		}
-
 
 		ipcRenderer.send( 'electron-settings-change', resp );
 		return syncDfd && syncDfd.promise();

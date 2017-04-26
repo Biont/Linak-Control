@@ -19,7 +19,7 @@ export default class ListView extends BiontView.extend({
         }
 
         this.listenTo(this.collection, "sync", this.render);
-        this.listenTo(this.collection, "change:status", this.render);
+        // this.listenTo(this.collection, "change", this.render);
         this._views = new Map();
         this.$el.empty();
     }

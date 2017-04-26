@@ -18,35 +18,42 @@ function getDeferred() {
 class PersistentDataModel extends Backbone.Model {
 
 	sync( method, model, options ) {
+		let ElectronSettings = require( 'electron-settings' );
+
 		console.log( arguments );
-		const store = require( 'electron' ).remote.require( 'electron-settings' );
 		let resp, errorMessage;
 		const syncDfd = getDeferred();
 		let key = this.getKey( model );
 		let data = model.attributes;
+
+		console.log( ElectronSettings.getAll() );
 		console.log( key );
+		// console.log('attributes', data );
+		// console.log('toJSON', model.toJSON() );
 		try {
 			switch ( method ) {
 				case 'read':
-					resp = isUndefined( model.id ) ? store.getAll() : store.get( key, data );
+					resp = isUndefined( model.id ) ? ElectronSettings.getAll() : ElectronSettings.get( key, data );
 					break;
 				case 'create':
 				case 'patch':
 				case 'update':
-					resp = store.set( key, data );
+					console.log(ElectronSettings);
+					console.log( 'setting: ' + key, data );
+					resp = ElectronSettings.set( key, data );
 					break;
 				case 'delete':
-					console.log( store.getAll() );
-					console.log( store.get( key ) );
-					resp = store.delete( key );
-					console.log( store.get( key ) );
+					console.log( ElectronSettings.getAll() );
+					console.log( ElectronSettings.get( key ) );
+					resp = ElectronSettings.delete( key );
+					console.log( ElectronSettings.get( key ) );
 					break;
 			}
 
 		} catch ( error ) {
 			errorMessage = error.message;
 		}
-
+		console.log( resp );
 		if ( resp ) {
 			if ( options.success ) {
 				options.success.call( model, resp, options );

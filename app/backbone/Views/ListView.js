@@ -37,7 +37,7 @@ var ListView = function (_BiontView$extend) {
         }
 
         _this.listenTo(_this.collection, "sync", _this.render);
-        _this.listenTo(_this.collection, "change:status", _this.render);
+        // this.listenTo(this.collection, "change", this.render);
         _this._views = new Map();
         _this.$el.empty();
         return _this;

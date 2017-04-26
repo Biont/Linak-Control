@@ -19,74 +19,66 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var ScheduleItemView = function (_BiontView$extend) {
-    _inherits(ScheduleItemView, _BiontView$extend);
+	_inherits(ScheduleItemView, _BiontView$extend);
 
-    function ScheduleItemView(data, options) {
-        _classCallCheck(this, ScheduleItemView);
+	function ScheduleItemView(data, options) {
+		_classCallCheck(this, ScheduleItemView);
 
-        var _this = _possibleConstructorReturn(this, _BiontView$extend.call(this, data, options));
+		/**
+   * Setup default subViews
+   * @type {{form: ScheduleFormView}}
+   */
+		data.subViews = data.subViews || {
+			form: new _ScheduleFormView2.default({
+				model: data.model
+			})
+		};
 
-        _this.form = new _ScheduleFormView2.default({
-            model: data.model
-        });
-        _this.listenTo(_this.model, 'destroy', _this.remove);
-        return _this;
-    }
+		var _this = _possibleConstructorReturn(this, _BiontView$extend.call(this, data, options));
 
-    ScheduleItemView.prototype.onChange = function onChange(e) {
-        var $input = jQuery(e.target);
-        switch ($input.attr('type')) {
-            case 'time':
-                this.model.set('time', $input.val());
-                break;
-            case 'range':
-                this.model.set('height', $input.val());
-        }
-    };
+		_this.form = new _ScheduleFormView2.default({
+			model: data.model
+		});
+		_this.listenTo(_this.model, 'destroy', _this.remove);
+		return _this;
+	}
 
-    ScheduleItemView.prototype.onButtonClick = function onButtonClick(e) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        var action = jQuery(e.currentTarget).data('action');
-        switch (action) {
-            case 'save':
-                this.save();
-                break;
-            case 'remove':
-                console.log('isNew', this.model.isNew());
-                this.model.destroy();
-        }
-    };
+	ScheduleItemView.prototype.onButtonClick = function onButtonClick(e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		var action = jQuery(e.currentTarget).data('action');
+		switch (action) {
+			case 'save':
+				this.save();
+				break;
+			case 'remove':
+				this.model.destroy();
+		}
+	};
 
-    ScheduleItemView.prototype.save = function save() {
-        this.model.save();
-    };
+	ScheduleItemView.prototype.save = function save() {
+		this.model.save();
+	};
 
-    /**
-     * Slides up and then kills the view
-     */
+	/**
+  * Slides up and then kills the view
+  */
 
 
-    ScheduleItemView.prototype.remove = function remove() {
-        var _this2 = this;
+	ScheduleItemView.prototype.remove = function remove() {
+		var _this2 = this;
 
-        this.$el.slideUp(275, function () {
-            _BiontView$extend.prototype.remove.call(_this2);
-        });
-    };
+		this.$el.slideUp(275, function () {
+			_BiontView$extend.prototype.remove.call(_this2);
+		});
+	};
 
-    ScheduleItemView.prototype.render = function render() {
-        _BiontView$extend.prototype.render.call(this);
-        this.assign(this.form, '[data-schedule-form]');
-        return this;
-    };
-
-    return ScheduleItemView;
+	return ScheduleItemView;
 }(_BiontView2.default.extend({
-    events: {
-        'click [data-action]': 'onButtonClick',
-        'click [data-action="save"]': 'save'
-    }
+	events: {
+		'click [data-action]': 'onButtonClick',
+		'click [data-action="save"]': 'save'
+	}
 }));
 
 exports.default = ScheduleItemView;

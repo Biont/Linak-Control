@@ -35,8 +35,12 @@ export default class ModalView extends BiontView.extend( {
 	}
 
 	remove() {
-		this.trigger( 'remove', this );
-		super.remove();
+		jQuery( '.biont-modal-content', this.$el ).removeClass( 'scale-in' );
+		setTimeout( () => {
+			this.trigger( 'remove', this );
+			super.remove();
+		}, 500 );
+
 	}
 
 	/**
@@ -49,11 +53,13 @@ export default class ModalView extends BiontView.extend( {
 			closeBtnText: this.closeBtnText
 		};
 		this.$el.html( this.template( data ) );
+		this.autoSubView();
 		if ( this.content ) {
 			this.assign( this.content, '[data-biont-modal-view]' );
 
 		}
-		jQuery( '.biont-modal-content', this.$el ).addClass( 'scale-in' );
+		setTimeout( () => jQuery( '.biont-modal-content', this.$el ).addClass( 'scale-in' ), 250 );
+
 		return this;
 	}
 

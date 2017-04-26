@@ -22,6 +22,7 @@ export default class TimePickerView extends BiontView.extend( {} ) {
 				default   : time
 			};
 		$('input[type="time"]',this.$el).pickatime( args );
+
 		return this;
 	}
 

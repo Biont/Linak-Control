@@ -1,6 +1,5 @@
 const { app, Tray, Menu, BrowserWindow } = require( 'electron' );
 const Background = require( './app/background' );
-const settings = require( 'electron-settings' );
 const path = require( 'path' )
 const url = require( 'url' )
 const iconPath = path.join( __dirname, 'icons/app-256.png' );
@@ -89,7 +88,7 @@ class Main {
 		} );
 
 		(
-			new Background.default( settings )
+			new Background.default( )
 		).init();
 
 	}
