@@ -31,12 +31,30 @@ export default class Background {
 		this.scheduler.boot();
 
 		// Listen for async message from renderer process
-		this.settings.watch( namespace, ( event, arg ) => {
-			// ipcMain.on('electron-settings-change', (event, arg) => {
-			console.log( 'IPC!! SETIINGS CHANGED!', arg );
+		// this.settings.watch( namespace, ( event, arg ) => {
+		ipcMain.on( 'electron-settings-change', ( event, request ) => {
+			let response;
+			switch ( request.method ) {
+				case 'read':
+					response = settings.get( request.key );
+					break;
+				case 'create':
+				case 'patch':
+				case 'update':
+					settings.set( request.key, request.data );
+					response = request.data;
+					break;
+				case 'delete':
+					settings.delete( request.key );
+					response = {};
+					break;
+			}
+			console.log( 'IPC!! SETIINGS CHANGED!', event );
 			console.log( this.settings.get( namespace ) );
 			this.scheduler.setData( settings.get( namespace ) );
 			this.scheduler.enqueue();
+
+			event.sender.send( request.replyContext, response );
 		} );
 	}
 

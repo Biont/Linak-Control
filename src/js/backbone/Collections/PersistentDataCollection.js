@@ -29,62 +29,51 @@ export default class PersistentDataCollection extends Backbone.Collection {
 	}
 
 	sync( method, model, options ) {
-		const store =require( 'electron-settings' );
-		let resp, errorMessage;
 		const syncDfd = getDeferred();
 		console.log( arguments );
-		console.log( arguments );
-		try {
-			switch ( method ) {
-				case 'read':
-					resp = isUndefined( model.id ) ? store.get( this.model.name ) : store.get( model.constructor.name + '.' + model.cid );
-					break;
-				case 'create':
-				case 'patch':
-				case 'update':
-					resp = store.set( model.constructor.name + '.' + model.cid, model );
-					break;
-				case 'delete':
-					resp = store.delete( model.constructor.name + '.' + model.cid );
-					break;
-			}
 
-		} catch ( error ) {
-			errorMessage = error.message;
-		}
-		resp = $.map( resp, function( value, index ) {
-			if ( isUndefined( value.id ) ) {
-				value.id = index;
-
-			}
-			return [ value ];
-		} );
-		if ( resp ) {
-			if ( options.success ) {
-				options.success.call( model, resp, options );
-			}
-			if ( syncDfd ) {
-				syncDfd.resolve( resp );
-			}
-
-		} else {
-			errorMessage = errorMessage ? errorMessage : 'Record Not Found';
-
-			if ( options.error ) {
-				options.error.call( model, errorMessage, options );
-			}
-			if ( syncDfd ) {
-				syncDfd.reject( errorMessage );
-			}
-		}
+		let key = isUndefined( model.id ) ? this.model.name : model.constructor.name + '.' + model.cid;
+		let data = model.toJSON();
+		ipcRenderer.send( 'electron-settings-change', { method, key, data, replyContext: this.getReplyContext() } );
 
 		// add compatibility with $.ajax
 		// always execute callback for success and error
-		if ( options.complete ) {
-			options.complete.call( model, resp );
-		}
+		ipcRenderer.once( this.getReplyContext(), ( event, result ) => {
+			if ( result ) {
+				console.log( result );
+				console.log( model );
+				/**
+				 * When fetching the entire collection,
+				 * we'll receive an array-like object which needs to be converted to a proper array
+				 */
+				if ( isUndefined( model.id ) ) {
+					result = $.map( result, function( value, index ) {
+						value.id = value.id || index;
+						return [ value ];
+					} );
+				}
+				console.log( 'got result', result );
+				syncDfd.resolve();
 
-		ipcRenderer.send( 'electron-settings-change', resp );
+				if ( options.success ) {
+					options.success.call( model, result, options );
+				}
+				if ( options.complete ) {
+
+					options.complete.call( model, result );
+				}
+			} else {
+				errorMessage = 'Record Not Found';
+
+				if ( options.error ) {
+					options.error.call( model, errorMessage, options );
+				}
+				if ( syncDfd ) {
+					syncDfd.reject( errorMessage );
+				}
+			}
+
+		} );
 		return syncDfd && syncDfd.promise();
 	}
 
@@ -108,5 +97,9 @@ export default class PersistentDataCollection extends Backbone.Collection {
 			console.log( 'Collection is now empty' );
 			this.trigger( 'empty', this )
 		}
+	}
+
+	getReplyContext() {
+		return 'asyncSettingsReply:' + this.constructor.name;
 	}
 }

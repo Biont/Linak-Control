@@ -18,76 +18,51 @@ function getDeferred() {
 class PersistentDataModel extends Backbone.Model {
 
 	sync( method, model, options ) {
-		let ElectronSettings = require( 'electron-settings' );
-
-		console.log( arguments );
-		let resp, errorMessage;
 		const syncDfd = getDeferred();
-		let key = this.getKey( model );
-		let data = model.attributes;
 
-		console.log( ElectronSettings.getAll() );
-		console.log( key );
-		// console.log('attributes', data );
-		// console.log('toJSON', model.toJSON() );
-		try {
-			switch ( method ) {
-				case 'read':
-					resp = isUndefined( model.id ) ? ElectronSettings.getAll() : ElectronSettings.get( key, data );
-					break;
-				case 'create':
-				case 'patch':
-				case 'update':
-					console.log(ElectronSettings);
-					console.log( 'setting: ' + key, data );
-					resp = ElectronSettings.set( key, data );
-					break;
-				case 'delete':
-					console.log( ElectronSettings.getAll() );
-					console.log( ElectronSettings.get( key ) );
-					resp = ElectronSettings.delete( key );
-					console.log( ElectronSettings.get( key ) );
-					break;
-			}
-
-		} catch ( error ) {
-			errorMessage = error.message;
-		}
-		console.log( resp );
-		if ( resp ) {
-			if ( options.success ) {
-				options.success.call( model, resp, options );
-			}
-			if ( syncDfd ) {
-				syncDfd.resolve( resp );
-			}
-
-		} else {
-			errorMessage = errorMessage ? errorMessage : 'Record Not Found';
-
-			if ( options.error ) {
-				options.error.call( model, errorMessage, options );
-			}
-			if ( syncDfd ) {
-				syncDfd.reject( errorMessage );
-			}
-		}
+		let key = this.getKey();
+		let data = model.toJSON();
+		ipcRenderer.send( 'electron-settings-change', { method, key, data, replyContext: this.getReplyContext() } );
 
 		// add compatibility with $.ajax
 		// always execute callback for success and error
-		if ( options.complete ) {
-			options.complete.call( model, resp );
-		}
-		ipcRenderer.send( 'electron-settings-change', resp );
+		ipcRenderer.once( this.getReplyContext(), ( event, result ) => {
+			if ( result ) {
+				console.log( 'got result', result );
+				syncDfd.resolve();
+
+				if ( options.success ) {
+					options.success.call( model, result, options );
+				}
+				if ( options.complete ) {
+
+					options.complete.call( model, result );
+				}
+			} else {
+				errorMessage = 'Record Not Found';
+
+				if ( options.error ) {
+					options.error.call( model, errorMessage, options );
+				}
+				if ( syncDfd ) {
+					syncDfd.reject( errorMessage );
+				}
+			}
+
+		} );
 		return syncDfd && syncDfd.promise();
 	}
 
-	getKey( model ) {
-		if ( isUndefined( model.id ) ) {
-			model.id = model.cid;
+	getKey() {
+		if ( isUndefined( this.id ) ) {
+			this.id = this.cid;
 
 		}
-		return model.constructor.name + '.' + model.id;
+		return this.constructor.name + '.' + this.id;
+	}
+
+	getReplyContext() {
+		return 'asyncSettingsReply:' + this.constructor.name;
 	}
 }
 
