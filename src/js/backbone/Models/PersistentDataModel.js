@@ -28,7 +28,6 @@ class PersistentDataModel extends Backbone.Model {
 		// always execute callback for success and error
 		ipcRenderer.once( this.getReplyContext(), ( event, result ) => {
 			if ( result ) {
-				console.log( 'got result', result );
 				syncDfd.resolve();
 
 				if ( options.success ) {
@@ -39,7 +38,7 @@ class PersistentDataModel extends Backbone.Model {
 					options.complete.call( model, result );
 				}
 			} else {
-				errorMessage = 'Record Not Found';
+				let errorMessage = 'Record Not Found';
 
 				if ( options.error ) {
 					options.error.call( model, errorMessage, options );
