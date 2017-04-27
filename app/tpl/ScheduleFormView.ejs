@@ -1,18 +1,29 @@
-<div data-subview="timepicker"></div>
-<p class="range-field">
-	<input
-		data-bind="height"
-		type="range"
-		min="0"
-		max="4948"
-		value="<%= height %>"
-	/>
-</p>
-<input
-	data-bind="height"
-	type="number"
-	value="<%= height %>"
-	min="0"
-	max="4948"
->
-<div data-action="test" class="waves-effect waves-light btn"><i class="material-icons left">question</i>Test</div>
+<div class="row">
+    <div data-subview="timepicker" class="col s4"></div>
+    <div class="col s4">
+        <label>Height
+            <input
+                    data-bind="height"
+                    type="number"
+                    value="<%= height %>"
+                    min="0"
+                    max="4948"
+            ></label></div>
+    <div class="col s4">
+        <div data-action="test" data-tooltip="Test height." class="btn-floating btn-large waves-effect waves-light indigo">
+            <i class="material-icons left">build</i></div>
+    </div>
+
+</div>
+<div class="row">
+
+    <p class="range-field col s12 ">
+        <input
+                data-bind="height"
+                type="range"
+                min="0"
+                max="4948"
+                value="<%= height %>"
+        />
+    </p>
+</div>
