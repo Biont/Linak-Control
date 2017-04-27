@@ -19,7 +19,7 @@ export default class LinakUtil {
         exec(__dirname + '/bin/example-moveTo ' + position, (error, stdout, stderr) => {
             console.log(arguments);
             if (error) {
-                console.log(stderr);
+                console.error(`Error code ${error.code}, signal ${error.signal}: ${error}`);
             }
             callback(error, stdout, stderr)
         });
@@ -28,7 +28,7 @@ export default class LinakUtil {
     getHeight(callback) {
         exec(__dirname + '/bin/example-getHeight', (error, stdout, stderr) => {
             if (error) {
-                console.error(`exec error: ${error}`);
+                console.error(`Error code ${error.code}, signal ${error.signal}: ${error}`);
             }
             let parts = stdout.split(' ');
             let data = {

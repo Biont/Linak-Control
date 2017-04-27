@@ -32,7 +32,7 @@ var LinakUtil = function () {
         (0, _child_process.exec)(__dirname + '/bin/example-moveTo ' + position, function (error, stdout, stderr) {
             console.log(_arguments);
             if (error) {
-                console.log(stderr);
+                console.error('Error code ' + error.code + ', signal ' + error.signal + ': ' + error);
             }
             callback(error, stdout, stderr);
         });
@@ -41,7 +41,7 @@ var LinakUtil = function () {
     LinakUtil.prototype.getHeight = function getHeight(callback) {
         (0, _child_process.exec)(__dirname + '/bin/example-getHeight', function (error, stdout, stderr) {
             if (error) {
-                console.error('exec error: ' + error);
+                console.error('Error code ' + error.code + ', signal ' + error.signal + ': ' + error);
             }
             var parts = stdout.split(' ');
             var data = {
