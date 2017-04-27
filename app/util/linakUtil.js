@@ -2,11 +2,7 @@
 
 exports.__esModule = true;
 
-var _sudoPrompt = require('sudo-prompt');
-
-var _sudoPrompt2 = _interopRequireDefault(_sudoPrompt);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _child_process = require('child_process');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -35,18 +31,30 @@ var LinakUtil = function () {
 		var callback = arguments[1];
 
 		console.log('Attempting to move the table to position ' + position);
-		var exec = require('child_process').exec;
-		console.log(process.cwd());
-		console.log(__dirname);
-		exec('pwd', function (error, stdout, stderr) {
-			// command output is in stdout
-			console.log(arguments);
-		});
-		_sudoPrompt2.default.exec(__dirname + '/bin/example-moveTo ' + position, this.options, function (error, stdout, stderr) {
+
+		(0, _child_process.exec)(__dirname + '/bin/example-moveTo ' + position, function (error, stdout, stderr) {
 			console.log(arguments);
 			if (error) {
 				console.log(stderr);
 			}
+			this.busy = false;
+			callback(error, stdout, stderr);
+		});
+	};
+
+	LinakUtil.prototype.getHeight = function getHeight(callback) {
+		(0, _child_process.exec)(__dirname + '/bin/example-getHeight', function (error, stdout, stderr) {
+			if (error) {
+				console.error('exec error: ' + error);
+			}
+			var parts = stdout.split(' ');
+			var data = {
+				signal: parts[2],
+				cm: parts[3],
+				raw: stdout
+			};
+
+			callback(error, data);
 		});
 	};
 

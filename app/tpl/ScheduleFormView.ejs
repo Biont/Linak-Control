@@ -1,13 +1,18 @@
 <div data-subview="timepicker"></div>
 <p class="range-field">
-    <input
-            data-bind="height"
-            id="<%= this.model.get('id') %>"
-            type="range"
-            min="68"
-            max="138"
-            value="<%= this.model.get('height') %>"
-    />
-    <label for="<%= this.model.get('id') %>">Height</label>
-
+	<input
+		data-bind="height"
+		type="range"
+		min="0"
+		max="4948"
+		value="<%= height %>"
+	/>
 </p>
+<input
+	data-bind="height"
+	type="number"
+	value="<%= height %>"
+	min="0"
+	max="4948"
+>
+<div data-action="test" class="waves-effect waves-light btn"><i class="material-icons left">question</i>Test</div>

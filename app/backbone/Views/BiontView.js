@@ -54,7 +54,10 @@ var BiontView = function (_Backbone$View$extend) {
 		}
 	}]);
 
-	function BiontView(data, options) {
+	function BiontView() {
+		var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+		var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
 		_classCallCheck(this, BiontView);
 
 		var _this = _possibleConstructorReturn(this, _Backbone$View$extend.call(this, data, options));
@@ -112,7 +115,9 @@ var BiontView = function (_Backbone$View$extend) {
 
 
 	BiontView.prototype.render = function render() {
-		var data = this.model ? this.model.toJSON() : {};
+		var viewData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+		var data = this.model ? this.model.toJSON() : viewData;
 		_.extend(data, _TemplateHelpers2.default);
 
 		this.$el.html(this.template(data));
@@ -143,6 +148,9 @@ var BiontView = function (_Backbone$View$extend) {
 	BiontView.prototype.autoBind = function autoBind() {
 		var _this3 = this;
 
+		if (!this.model) {
+			return;
+		}
 		$('[data-bind]', this.$el).each(function (idx, obj) {
 			var $this = $(obj),
 			    data = $this.data();

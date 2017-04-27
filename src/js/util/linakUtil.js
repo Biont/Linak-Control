@@ -1,4 +1,4 @@
-import Sudo from 'sudo-prompt'  ;
+import {exec} from "child_process";
 export default class LinakUtil {
 	/**
 	 * Configure the sudo prompt
@@ -9,6 +9,7 @@ export default class LinakUtil {
 			name: 'Electron',
 			icns: '/Applications/Electron.app/Contents/Resources/Electron.icns', // (optional)
 		};
+
 	}
 
 	/**
@@ -19,18 +20,30 @@ export default class LinakUtil {
 	 */
 	moveTo( position = 0, callback ) {
 		console.log( 'Attempting to move the table to position ' + position );
-		let exec = require( 'child_process' ).exec;
-		console.log( process.cwd() );
-		console.log( __dirname );
-		exec( 'pwd', function( error, stdout, stderr ) {
-			// command output is in stdout
-			console.log( arguments );
-		} );
-		Sudo.exec( __dirname + '/bin/example-moveTo ' + position, this.options, function( error, stdout, stderr ) {
+
+		exec( __dirname + '/bin/example-moveTo ' + position, function( error, stdout, stderr ) {
 			console.log( arguments );
 			if ( error ) {
 				console.log( stderr );
 			}
+			this.busy=false;
+			callback( error, stdout, stderr )
+		} );
+	}
+
+	getHeight( callback ) {
+		exec( __dirname + '/bin/example-getHeight', ( error, stdout, stderr ) => {
+			if ( error ) {
+				console.error( `exec error: ${error}` );
+			}
+			let parts = stdout.split( ' ' );
+			let data = {
+				signal: parts[ 2 ],
+				cm    : parts[ 3 ],
+				raw   : stdout
+			};
+
+			callback( error, data )
 		} );
 	}
 

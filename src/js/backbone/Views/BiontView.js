@@ -23,7 +23,7 @@ export default class BiontView extends Backbone.View.extend( {} ) {
 		return this.getTemplate()
 	}
 
-	constructor( data, options ) {
+	constructor( data = {}, options = {} ) {
 		super( data, options );
 		this.subViews = data.subViews;
 		if ( this.constructor.name === 'BiontView' ) {
@@ -74,8 +74,8 @@ export default class BiontView extends Backbone.View.extend( {} ) {
 	 * Very basic render function.
 	 * @returns {BiontView}
 	 */
-	render() {
-		let data = this.model ? this.model.toJSON() : {};
+	render( viewData = {} ) {
+		let data = this.model ? this.model.toJSON() : viewData;
 		_.extend( data, TemplateHelpers );
 
 		this.$el.html( this.template( data ) );
@@ -101,6 +101,9 @@ export default class BiontView extends Backbone.View.extend( {} ) {
 	}
 
 	autoBind() {
+		if ( !this.model ) {
+			return;
+		}
 		$( '[data-bind]', this.$el ).each( ( idx, obj ) => {
 			let $this = $( obj ), data = $this.data();
 			if ( !data.bind ) {

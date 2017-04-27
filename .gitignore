@@ -31,6 +31,7 @@ app/node_modules
 /app/**/*.js
 /app/**/*.map
 /app/backbone/*
+!/app/tpl
 
 # OSX
 .DS_Store

@@ -1,9 +1,12 @@
 import {dialog, ipcMain, Notification} from "electron";
 import SchedulerLogic from "./util/schedulerLogic";
 import Linak from "./util/linakUtil";
+import Statistics from "./statistics";
 const settings = require( 'electron-settings' );
 
 const namespace = 'ScheduleItem';
+const heightTickRate = 1000;
+const statisticsTickRate = 1000;
 
 /**
  * Runs in the background and performs actions when needed
@@ -11,7 +14,10 @@ const namespace = 'ScheduleItem';
 export default class Background {
 	constructor() {
 		this.notificationSubscribers = [];
+		this.tableHeightSubscribers = [];
+		this.tableStatisticsSubscribers = [];
 		this.linak = new Linak();
+		this.statistics = new Statistics( settings, 'AppStatistics' );
 		this.scheduler = new SchedulerLogic( settings.get( namespace ), [
 
 			{
@@ -38,19 +44,45 @@ export default class Background {
 				delay   : 0,
 				callback: ( item ) => {
 					console.log( 'this.linak.moveTo(' + item.height + ')' );
+					this.moveTable( item.height );
 
-					// this.linak.moveTo(item.height, () => {
-					//     console.log('Linak done firing');
-					// });
 				}
 			}
 		] );
 	}
 
-	init() {
-		ipcMain.on( 'subscribe-notifications', ( event ) => {
-			this.notificationSubscribers.push( event.sender );
+	moveTable( height ) {
+		this.linak.moveTo( height, ( error, stdout, stderr ) => {
+			if ( error ) {
+				dialog.showMessageBox( {
+					title  : 'Could not communicate with USB driver',
+					message: `exec error: ${error}`
+				} );
+			}
+
 		} );
+	}
+
+	init() {
+
+		ipcMain.on( 'move-table', ( event, args ) => {
+			this.moveTable( args.height );
+		} );
+
+		ipcMain.on( 'subscribe-notifications', ( event, args ) => {
+			this.notificationSubscribers.push( { sender: event.sender, reply: args.reply } );
+		} );
+
+		ipcMain.on( 'subscribe-table-height', ( event, args ) => {
+			this.tableHeightSubscribers.push( { sender: event.sender, reply: args.reply } );
+		} );
+
+		ipcMain.on( 'subscribe-table-statistics', ( event, args ) => {
+			this.tableStatisticsSubscribers.push( { sender: event.sender, reply: args.reply } );
+		} );
+
+		this.tableHeightInterval = setInterval( () => this.sendTableHeight(), heightTickRate );
+		this.statisticsInterval = setInterval( () => this.sendStatistics(), statisticsTickRate );
 		this.scheduler.enqueue();
 
 		// Listen for async message from renderer process
@@ -83,10 +115,38 @@ export default class Background {
 	sendNotification( data ) {
 		console.log( 'sending notifications' );
 		this.notificationSubscribers.forEach( ( element, index, array ) => {
-			element.send( 'notify', data );
+			element.sender.send( element.reply, data );
 
 		} );
 
+	}
+
+	sendTableHeight() {
+		this.linak.getHeight( ( error, result ) => {
+			if ( error ) {
+				dialog.showMessageBox( {
+					title  : 'Could not communicate with USB driver',
+					message: `exec error: ${error}`
+				} );
+				clearInterval( this.tableHeightInterval );
+				clearInterval( this.statisticsInterval );
+				return;
+			}
+			this.statistics.addHeightTime( result.signal, heightTickRate );
+			this.statistics.save();
+			this.notificationSubscribers.forEach( ( element, index, array ) => {
+				element.sender.send( element.reply, result );
+
+			} );
+		} );
+	}
+
+	sendStatistics() {
+		console.log( 'sending statistics' );
+		this.tableStatisticsSubscribers.forEach( ( element, index, array ) => {
+			element.sender.send( element.reply, this.statistics.getData() );
+
+		} );
 	}
 
 }

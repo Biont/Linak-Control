@@ -1,14 +1,22 @@
 <nav>
-    <div class="nav-wrapper">
-        <a href="#" class="brand-logo">Linak Control</a>
-    </div>
+	<div class="nav-wrapper">
+		<a href="#" class="brand-logo">Linak Control</a>
+	</div>
 </nav>
+<div class="container">
+	<h5>Your Table</h5>
+	<div data-subview="tableHeight"></div>
+	<div class="divider"></div>
 
-<ul data-subview="schedule" class="collapsible" data-collapsible="accordion"></ul>
+	<h5>Schedule</h5>
+	<ul data-subview="schedule" class="collapsible" data-collapsible="accordion"></ul>
 
-<div class="fixed-action-btn">
-    <a data-add class="btn-floating btn-large waves-effect waves-light green"><i class="material-icons">add</i></a>
-    <ul>
-        <li><a data-delete-all class="btn-floating red"><i class="material-icons">delete</i></a></li>
-    </ul>
+	<div class="fixed-action-btn">
+		<a data-add class="btn-floating btn-large waves-effect waves-light green"><i class="material-icons">add</i></a>
+		<ul>
+			<li><a data-delete-all class="btn-floating red"><i class="material-icons">delete</i></a></li>
+		</ul>
+	</div>
+
+	<div data-subview="tableStatistics"></div>
 </div>

@@ -18,6 +18,14 @@ var _ScheduleFormView = require("./ScheduleFormView");
 
 var _ScheduleFormView2 = _interopRequireDefault(_ScheduleFormView);
 
+var _TableHeightView = require("./TableHeightView");
+
+var _TableHeightView2 = _interopRequireDefault(_TableHeightView);
+
+var _TableStatisticsView = require("./TableStatisticsView");
+
+var _TableStatisticsView2 = _interopRequireDefault(_TableStatisticsView);
+
 var _TextView = require("./TextView");
 
 var _TextView2 = _interopRequireDefault(_TextView);
@@ -43,80 +51,82 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var AppView = function (_BiontView$extend) {
-    _inherits(AppView, _BiontView$extend);
+	_inherits(AppView, _BiontView$extend);
 
-    function AppView(data, options) {
-        _classCallCheck(this, AppView);
+	function AppView(data, options) {
+		_classCallCheck(this, AppView);
 
-        data.subViews = data.subViews || {
-            schedule: new _ListView2.default({
-                view: _ScheduleItemView2.default,
-                collection: data.collection
-            })
-        };
+		data.subViews = data.subViews || {
+			schedule: new _ListView2.default({
+				view: _ScheduleItemView2.default,
+				collection: data.collection
+			}),
+			tableHeight: new _TableHeightView2.default(),
+			tableStatistics: new _TableStatisticsView2.default()
+		};
 
-        var _this = _possibleConstructorReturn(this, _BiontView$extend.call(this, data, options));
+		var _this = _possibleConstructorReturn(this, _BiontView$extend.call(this, data, options));
 
-        _this.collection = data.collection;
+		_this.collection = data.collection;
 
-        _this.listenTo(_this.collection, 'empty', _this.open);
-        return _this;
-    }
+		_this.listenTo(_this.collection, 'empty', _this.open);
+		return _this;
+	}
 
-    AppView.prototype.open = function open() {
-        var time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            height = 80;
+	AppView.prototype.open = function open() {
+		var time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+		    height = 80;
 
-        var newItem = new _ScheduleItem2.default({
-            time: time, height: height
-        });
-        var modal = new _ModalView2.default({
-            header: 'Create new Schedule Item',
-            closeBtnText: 'Save',
-            subViews: {
-                content: new _ScheduleFormView2.default({
-                    model: newItem
-                })
+		var newItem = new _ScheduleItem2.default({
+			time: time, height: height
+		});
+		var modal = new _ModalView2.default({
+			header: 'Create new Schedule Item',
+			closeBtnText: 'Save',
+			subViews: {
+				content: new _ScheduleFormView2.default({
+					model: newItem
+				})
 
-            }
-        });
+			}
+		});
 
-        modal.render();
-        this.listenTo(modal, 'remove:button', function () {
-            newItem.save();
-            this.collection.fetch();
-        });
-    };
+		modal.render();
+		this.listenTo(modal, 'remove:button', function () {
+			newItem.save();
+			this.collection.fetch();
+		});
+	};
 
-    AppView.prototype.deleteAll = function deleteAll() {
-        var _this2 = this;
+	AppView.prototype.deleteAll = function deleteAll() {
+		var _this2 = this;
 
-        var confirm = new _ConfirmView2.default({
-            header: 'Are you sure?',
-            subViews: {
-                content: new _TextView2.default({
-                    text: 'This will wipe ALL application data. Are you sure?'
-                })
+		var confirm = new _ConfirmView2.default({
+			header: 'Are you sure?',
+			subViews: {
+				content: new _TextView2.default({
+					text: 'This will wipe ALL application data. Are you sure?'
+				})
 
-            },
-            confirm: function confirm() {
-                console.log('DELETING EVERYTHING!!');
-                return;
-                var store = require('electron-settings');
-                store.deleteAll();
-                _this2.collection.fetch();
-            }
-        });
+			},
+			confirm: function confirm() {
+				console.log('DELETING EVERYTHING!!');
+				return;
+				var store = require('electron-settings');
+				store.deleteAll();
+				_this2.collection.fetch();
+			}
+		});
 
-        confirm.render();
-    };
+		confirm.render();
+	};
 
-    return AppView;
+	return AppView;
 }(_BiontView2.default.extend({
-    events: {
-        "click [data-add]": "open",
-        "click [data-delete-all]": "deleteAll"
-    }
+	events: {
+		"click [data-add]": "open",
+		"click [data-delete-all]": "deleteAll"
+	}
 }));
 
 exports.default = AppView;
