@@ -1,10 +1,16 @@
-import OverlayView from "./OverlayView";
+import BiontView from "./BiontView";
+import TextView from "./TextView";
+
 /**
  * Creates a fullscreen popup box with custom content
+ * Non-interactive and cannot be closed manually. Use a ModalView for that.
  */
-export default class ModalView extends OverlayView.extend( {
-	events  : {
-		'click [data-cancel]': 'onCancelBtn',
+export default class OverlayView extends BiontView.extend( {
+	subViews: {
+		content: () => new TextView( {
+			text: 'Overlay'
+		} )
+
 	}
 } ) {
 	/**
@@ -16,15 +22,12 @@ export default class ModalView extends OverlayView.extend( {
 	constructor( data, options ) {
 		super( data, options );
 
-		this.closeBtnText = data.closeBtnText || 'OK';
-		jQuery( document ).keyup( this.keyAction.bind( this ) );
-	}
+		this.header = data.header || false;
 
-	keyAction( e ) {
-		let code = e.keyCode || e.which;
-		if ( code === 27 ) {
-			this.trigger( 'remove:escape', this );
-			this.remove();
+		jQuery( 'body' ).append( this.$el );
+
+		if ( data.autoClose !== undefined ) {
+			setTimeout( () => this.remove(), data.autoClose );
 		}
 	}
 
@@ -34,7 +37,6 @@ export default class ModalView extends OverlayView.extend( {
 			this.trigger( 'remove', this );
 			super.remove();
 		}, 350 );
-
 	}
 
 	/**
@@ -44,24 +46,13 @@ export default class ModalView extends OverlayView.extend( {
 	 */
 	render() {
 		let data = {
-			header      : this.header,
-			closeBtnText: this.closeBtnText
+			header: this.header,
 		};
 		this.$el.html( this.template( data ) );
 		this.autoSubView();
-		if ( this.content ) {
-			this.assign( this.content, '[data-biont-modal-view]' );
-
-		}
 		setTimeout( () => jQuery( '.biont-modal-content', this.$el ).addClass( 'scale-in' ), 100 );
 
 		return this;
-	}
-
-	onCancelBtn() {
-		this.trigger( 'remove:button', this );
-		this.remove();
-
 	}
 
 }

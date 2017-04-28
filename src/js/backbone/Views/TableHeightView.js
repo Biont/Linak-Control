@@ -1,4 +1,4 @@
-import {ipcRenderer, remote} from "electron";
+import {Renderer as background} from "../../util/ipcHandler";
 import BiontView from "./BiontView";
 
 /**
@@ -21,11 +21,13 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 	}
 
 	listenToTableHeight() {
-		let reply = 'app-notify';
-		ipcRenderer.send( 'subscribe-notifications', { reply } );
-		ipcRenderer.on( reply, ( event, data ) => {
-			this.tableData = data;
-			this.render();
+
+		background.subscribe( 'table-height', ( event, data ) => {
+			if ( data.signal && data.cm ) {
+				this.tableData = data;
+				this.render();
+			}
+
 		} );
 
 	}

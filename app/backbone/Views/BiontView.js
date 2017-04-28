@@ -62,7 +62,11 @@ var BiontView = function (_Backbone$View$extend) {
 
 		var _this = _possibleConstructorReturn(this, _Backbone$View$extend.call(this, data, options));
 
-		_this.subViews = data.subViews;
+		if (data.subViews) {
+			_this.subViews = data.subViews;
+		}
+		_this.parent = null;
+		// this.subViews = data.subViews;
 		if (_this.constructor.name === 'BiontView') {
 			throw new TypeError("Cannot construct BiontView instances directly");
 		}
@@ -137,10 +141,22 @@ var BiontView = function (_Backbone$View$extend) {
 				console.error('empty subview attribute');
 				return;
 			}
-			if (!_this2.subViews[data.subview]) {
-				console.error('Undefined subView requested!', _this2.subViews);
+			if (!_this2.subViews.hasOwnProperty(data.subview)) {
+				console.error('Undefined subView requested: ' + data.subview, _this2.subViews);
+				console.trace();
+				return;
 			}
 			var view = _this2.subViews[data.subview];
+
+			if (typeof view === 'function') {
+				// Support traditional and arrow functions to some extent
+				view = view.call(_this2, _this2);
+
+				//TODO: Make this work, it reuses instances:
+				// view = this.subViews[ data.subview ] = view.call( this, this );
+			}
+			view.parent = _this2;
+
 			view.setElement($this).render();
 		});
 	};
@@ -211,7 +227,9 @@ var BiontView = function (_Backbone$View$extend) {
 	};
 
 	return BiontView;
-}(_backbone2.default.View.extend({}));
+}(_backbone2.default.View.extend({
+	subViews: {}
+}));
 
 exports.default = BiontView;
 //# sourceMappingURL=BiontView.js.map

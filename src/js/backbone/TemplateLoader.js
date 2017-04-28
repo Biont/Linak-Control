@@ -1,0 +1,1 @@
+//TODO: Write a reusable template loader that is able to load ejs files from DOM as well as require them via node. It should also handle precompiled templates

@@ -2,6 +2,8 @@
 
 exports.__esModule = true;
 
+var _ipcHandler = require("../../util/ipcHandler");
+
 var _BiontView = require("./BiontView.js");
 
 var _BiontView2 = _interopRequireDefault(_BiontView);
@@ -9,6 +11,10 @@ var _BiontView2 = _interopRequireDefault(_BiontView);
 var _ConfirmView = require("./ConfirmView");
 
 var _ConfirmView2 = _interopRequireDefault(_ConfirmView);
+
+var _OverlayView = require("./OverlayView");
+
+var _OverlayView2 = _interopRequireDefault(_OverlayView);
 
 var _ModalView = require("./ModalView");
 
@@ -25,6 +31,10 @@ var _TableHeightView2 = _interopRequireDefault(_TableHeightView);
 var _TableStatisticsView = require("./TableStatisticsView");
 
 var _TableStatisticsView2 = _interopRequireDefault(_TableStatisticsView);
+
+var _SearchDeviceView = require("./SearchDeviceView");
+
+var _SearchDeviceView2 = _interopRequireDefault(_SearchDeviceView);
 
 var _TextView = require("./TextView");
 
@@ -56,22 +66,57 @@ var AppView = function (_BiontView$extend) {
 	function AppView(data, options) {
 		_classCallCheck(this, AppView);
 
-		data.subViews = data.subViews || {
-			schedule: new _ListView2.default({
-				view: _ScheduleItemView2.default,
-				collection: data.collection
-			}),
-			tableHeight: new _TableHeightView2.default(),
-			tableStatistics: new _TableStatisticsView2.default()
-		};
+		var _this2 = _possibleConstructorReturn(this, _BiontView$extend.call(this, data, options));
 
-		var _this = _possibleConstructorReturn(this, _BiontView$extend.call(this, data, options));
+		_this2.collection = data.collection;
+		_this2.deviceFound = false;
+		_ipcHandler.Renderer.subscribe('deviceFound', function () {
+			console.log('device found');
+			_this2.deviceFound = true;
+			if (_this2.searchModal) {
+				_this2.searchModal.remove();
+				delete _this2.searchModal;
+			}
+			_this2.render();
+		});
+		_ipcHandler.Renderer.subscribe('deviceLost', function () {
+			console.log('device lost');
+			_this2.deviceFound = false;
+			_this2.render();
+		});
 
-		_this.collection = data.collection;
+		_this2.listenTo(_this2.collection, 'empty', _this2.open);
 
-		_this.listenTo(_this.collection, 'empty', _this.open);
-		return _this;
+		_ipcHandler.Renderer.emit('rendererReady');
+		return _this2;
 	}
+
+	AppView.prototype.render = function render() {
+		if (!this.deviceFound) {
+			console.log('searchmodal', this.searchModal);
+			if (!this.searchModal) {
+				this.openSearchModal();
+			}
+		} else {
+			_BiontView$extend.prototype.render.call(this);
+		}
+	};
+
+	AppView.prototype.openSearchModal = function openSearchModal() {
+		this.searchModal = new _OverlayView2.default({
+			header: 'Waing for Device...',
+			closeBtnText: 'Save',
+			subViews: {
+				content: function content() {
+					return new _SearchDeviceView2.default({
+						text: 'Looking for Device'
+					});
+				}
+
+			}
+		});
+		this.searchModal.render();
+	};
 
 	AppView.prototype.open = function open() {
 		var time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -84,9 +129,11 @@ var AppView = function (_BiontView$extend) {
 			header: 'Create new Schedule Item',
 			closeBtnText: 'Save',
 			subViews: {
-				content: new _ScheduleFormView2.default({
-					model: newItem
-				})
+				content: function content() {
+					return new _ScheduleFormView2.default({
+						model: newItem
+					});
+				}
 
 			}
 		});
@@ -99,7 +146,7 @@ var AppView = function (_BiontView$extend) {
 	};
 
 	AppView.prototype.deleteAll = function deleteAll() {
-		var _this2 = this;
+		var _this3 = this;
 
 		var confirm = new _ConfirmView2.default({
 			header: 'Are you sure?',
@@ -114,7 +161,7 @@ var AppView = function (_BiontView$extend) {
 				return;
 				var store = require('electron-settings');
 				store.deleteAll();
-				_this2.collection.fetch();
+				_this3.collection.fetch();
 			}
 		});
 
@@ -126,6 +173,19 @@ var AppView = function (_BiontView$extend) {
 	events: {
 		"click [data-add]": "open",
 		"click [data-delete-all]": "deleteAll"
+	}, subViews: {
+		schedule: function schedule(_this) {
+			return new _ListView2.default({
+				view: _ScheduleItemView2.default,
+				collection: _this.collection
+			});
+		},
+		tableHeight: function tableHeight() {
+			return new _TableHeightView2.default();
+		},
+		tableStatistics: function tableStatistics() {
+			return new _TableStatisticsView2.default();
+		}
 	}
 }));
 
