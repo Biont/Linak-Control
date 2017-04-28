@@ -1,73 +1,100 @@
 .biont-modal-bg {
-	position: fixed;
-	/* Stay in place */
-	z-index: 9999;
-	/* Sit on top */
-	left: 0;
-	top: 0;
-	width: 100%;
-	/* Full width */
-	height: 100%;
-	/* Full height */
-	overflow: auto;
-	/* Enable scroll if needed */
-	background-color: black;
-	/* Fallback color */
-	background-color: rgba(0, 0, 0, 0.4);
-	/* Black w/ opacity */ }
+    position: fixed;
+    /* Stay in place */
+    z-index: 9999;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: black;
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
 
 .biont-modal-content {
-	background-color: #fefefe;
-	margin: 15% auto;
-	/* 15% from the top and centered */
-	padding: 20px;
-	border: 1px solid #888;
-	width: 80%;
-	/* Could be more or less, depending on screen size */ }
-
+    background-color: #fefefe;
+    margin: 15% auto;
+    /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    /* Could be more or less, depending on screen size */
+}
 
 [data-tabs] a {
-	margin: 0 0.3em;
-	padding: 0.3em 0.5em;
-	border: 1px solid #959595;
-	border-bottom: none;
-	background: #cccccc;
-	box-shadow: inset 0px -8px 5px -4px rgba(0, 0, 0, 0.2); }
+    margin: 0 0.3em;
+    padding: 0.3em 0.5em;
+    border: 1px solid #959595;
+    border-bottom: none;
+    background: #cccccc;
+    box-shadow: inset 0px -8px 5px -4px rgba(0, 0, 0, 0.2);
+}
+
 [data-tabs] a.active {
-	box-shadow: 0px -3px 4px 0px rgba(0, 0, 0, 0.2);
-	background: white; }
+    box-shadow: 0px -3px 4px 0px rgba(0, 0, 0, 0.2);
+    background: white;
+}
 
 [data-tab] {
-	border-top: 1px solid #d1d1d1; }
+    border-top: 1px solid #d1d1d1;
+}
 
 [data-row-actions] [data-action] {
-	margin: 0.1em 0.3em; }
+    margin: 0.1em 0.3em;
+}
 
 * {
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Safari */
-	-khtml-user-select: none; /* Konqueror HTML */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+                                     supported by Chrome and Opera */
+}
+
+.full-width {
+    width: 100%;
+}
+
+.collapsible-body {
+    padding: .6rem;
 }
 
 @keyframes wiggle {
-	0% { transform: rotate(0deg); }
-	88% { transform: rotate(0deg); }
-	90% { transform: rotate(-8deg); }
-	94% { transform: rotate(8deg); }
-	98% { transform: rotate(-8deg); }
-	100% { transform: rotate(0deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    88% {
+        transform: rotate(0deg);
+    }
+    90% {
+        transform: rotate(-8deg);
+    }
+    94% {
+        transform: rotate(8deg);
+    }
+    98% {
+        transform: rotate(-8deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
 }
 
 .wiggle {
-	display: inline-block;
-	animation: wiggle 5s infinite;
-	animation-timing-function: ease-out;
+    display: inline-block;
+    animation: wiggle 5s infinite;
+    animation-timing-function: ease-out;
 }
 
 .wiggle:hover {
-	animation: none;
+    animation: none;
 }

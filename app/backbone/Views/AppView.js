@@ -74,7 +74,7 @@ var AppView = function (_BiontView$extend) {
         // background.subscribe('deviceLost', () => this.onDeviceLost());
 
         //Debug
-        _this2.devShim();
+        // this.devShim();
 
         _this2.listenTo(_this2.collection, 'empty', _this2.open);
 
@@ -123,7 +123,7 @@ var AppView = function (_BiontView$extend) {
     };
 
     AppView.prototype.render = function render() {
-        // super.render();return;
+        _BiontView$extend.prototype.render.call(this);return;
         if (!this.deviceFound) {
             if (!this.searchModal) {
                 this.openSearchModal();

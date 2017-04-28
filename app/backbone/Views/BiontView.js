@@ -37,6 +37,7 @@ require.extensions['.ejs'] = function (module) {
     var options = { filename: filename, client: true, compileDebug: true };
     var template = _fs2.default.readFileSync(filename).toString().replace(/^\uFEFF/, '');
     var fn = _ejs2.default.compile(template, options);
+    console.log(fn.toString());
     return module._compile('module.exports = ' + fn.toString() + ';', filename);
 };
 

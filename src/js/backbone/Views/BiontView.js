@@ -11,6 +11,7 @@ require.extensions['.ejs'] = function (module) {
     let options = {filename: filename, client: true, compileDebug: true};
     let template = fs.readFileSync(filename).toString().replace(/^\uFEFF/, '');
     let fn = ejs.compile(template, options);
+    console.log(fn.toString());
     return module._compile('module.exports = ' + fn.toString() + ';', filename);
 };
 
