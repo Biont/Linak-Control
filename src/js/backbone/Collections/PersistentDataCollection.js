@@ -1,6 +1,6 @@
 import {ipcRenderer, remote} from "electron";
 import Backbone from "backbone";
-import {isUndefined, result} from "underscore";
+import {isUndefined, result, each} from "underscore";
 
 /** Get the Deferred status from $ if we have jQuery, otherwise use Backbone's
  *  @returns {boolean} - Whether the request was deferred

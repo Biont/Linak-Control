@@ -152,6 +152,7 @@ export default class Background {
 			// 	} );
 			// 	return;
 			// }
+
 			this.statistics.addHeightTime( result.signal, heightTickRate );
 			this.statistics.save();
 			subscriptions.trigger( tableHeightKey, result )
