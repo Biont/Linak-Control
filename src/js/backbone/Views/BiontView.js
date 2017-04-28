@@ -2,18 +2,9 @@ import Backbone from "backbone";
 import {each} from "underscore";
 
 import fs from "fs";
-import ejs from "ejs";
 import TemplateHelpers from "../TemplateHelpers";
 const tplDir = '../../tpl/';
 
-require.extensions['.ejs'] = function (module) {
-    let filename = module.filename;
-    let options = {filename: filename, client: true, compileDebug: true};
-    let template = fs.readFileSync(filename).toString().replace(/^\uFEFF/, '');
-    let fn = ejs.compile(template, options);
-    console.log(fn.toString());
-    return module._compile('module.exports = ' + fn.toString() + ';', filename);
-};
 
 export default class BiontView extends Backbone.View.extend({
     subViews: {}
@@ -52,7 +43,7 @@ export default class BiontView extends Backbone.View.extend({
         /**
          * Try to find a given override first
          */
-        tplOverride = __dirname + '/' + tplDir + tplOverride + '.ejs';
+        tplOverride = __dirname + '/' + tplDir + tplOverride + '.js';
 
         if (tplOverride && (
                 fs.existsSync(tplOverride)
@@ -65,7 +56,7 @@ export default class BiontView extends Backbone.View.extend({
          */
         let curObject = this;
         while (curObject && curObject.constructor.name !== 'BiontView') {
-            let tplModule = __dirname + '/' + tplDir + curObject.constructor.name + '.ejs';
+            let tplModule = __dirname + '/' + tplDir + curObject.constructor.name + '.js';
             if (fs.existsSync(tplModule)) {
                 return require(tplModule);
             }

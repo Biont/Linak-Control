@@ -14,10 +14,6 @@ var _fs = require("fs");
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _ejs = require("ejs");
-
-var _ejs2 = _interopRequireDefault(_ejs);
-
 var _TemplateHelpers = require("../TemplateHelpers");
 
 var _TemplateHelpers2 = _interopRequireDefault(_TemplateHelpers);
@@ -31,15 +27,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var tplDir = '../../tpl/';
-
-require.extensions['.ejs'] = function (module) {
-    var filename = module.filename;
-    var options = { filename: filename, client: true, compileDebug: true };
-    var template = _fs2.default.readFileSync(filename).toString().replace(/^\uFEFF/, '');
-    var fn = _ejs2.default.compile(template, options);
-    console.log(fn.toString());
-    return module._compile('module.exports = ' + fn.toString() + ';', filename);
-};
 
 var BiontView = function (_Backbone$View$extend) {
     _inherits(BiontView, _Backbone$View$extend);
@@ -91,7 +78,7 @@ var BiontView = function (_Backbone$View$extend) {
         /**
          * Try to find a given override first
          */
-        tplOverride = __dirname + '/' + tplDir + tplOverride + '.ejs';
+        tplOverride = __dirname + '/' + tplDir + tplOverride + '.js';
 
         if (tplOverride && _fs2.default.existsSync(tplOverride)) {
             return require(tplOverride);
@@ -102,7 +89,7 @@ var BiontView = function (_Backbone$View$extend) {
          */
         var curObject = this;
         while (curObject && curObject.constructor.name !== 'BiontView') {
-            var tplModule = __dirname + '/' + tplDir + curObject.constructor.name + '.ejs';
+            var tplModule = __dirname + '/' + tplDir + curObject.constructor.name + '.js';
             if (_fs2.default.existsSync(tplModule)) {
                 return require(tplModule);
             }
