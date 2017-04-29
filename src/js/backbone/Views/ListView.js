@@ -79,6 +79,7 @@ export default class ListView extends BiontView.extend( {
 		} );
 
 		this.$el.collapsible();
+        Materialize.updateTextFields();
 		return this;
 	}
 

@@ -1,8 +1,9 @@
-<label>Time
-	<input
-		data-bind="time"
-		value="<%= this.model.get('time') %>"
-		class="timepicker"
-		type="time"
-	>
-</label>
+<input
+        data-bind="time"
+
+        id="<%= this.cid %>"
+        value="<%= this.model.get('time') %>"
+        class="timepicker active"
+        type="time"
+>
+<label for="<%= this.cid %>">Time</label>

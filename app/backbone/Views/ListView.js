@@ -102,6 +102,7 @@ var ListView = function (_BiontView$extend) {
 		});
 
 		this.$el.collapsible();
+		Materialize.updateTextFields();
 		return this;
 	};
 
