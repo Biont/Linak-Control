@@ -32,8 +32,8 @@ export default class AppView extends BiontView.extend({
         super(data, options);
         this.collection = data.collection;
         this.deviceFound = false;
-        // background.subscribe('deviceFound', () => this.onDeviceFound());
-        // background.subscribe('deviceLost', () => this.onDeviceLost());
+        background.subscribe('deviceFound', () => this.onDeviceFound());
+        background.subscribe('deviceLost', () => this.onDeviceLost());
 
         //Debug
         // this.devShim();
@@ -84,7 +84,7 @@ export default class AppView extends BiontView.extend({
     }
 
     render() {
-        super.render();return;
+        // super.render();return;
         if (!this.deviceFound) {
             if (!this.searchModal) {
                 this.openSearchModal();

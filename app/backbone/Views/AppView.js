@@ -70,8 +70,12 @@ var AppView = function (_BiontView$extend) {
 
         _this2.collection = data.collection;
         _this2.deviceFound = false;
-        // background.subscribe('deviceFound', () => this.onDeviceFound());
-        // background.subscribe('deviceLost', () => this.onDeviceLost());
+        _ipcHandler.Renderer.subscribe('deviceFound', function () {
+            return _this2.onDeviceFound();
+        });
+        _ipcHandler.Renderer.subscribe('deviceLost', function () {
+            return _this2.onDeviceLost();
+        });
 
         //Debug
         // this.devShim();
@@ -123,7 +127,7 @@ var AppView = function (_BiontView$extend) {
     };
 
     AppView.prototype.render = function render() {
-        _BiontView$extend.prototype.render.call(this);return;
+        // super.render();return;
         if (!this.deviceFound) {
             if (!this.searchModal) {
                 this.openSearchModal();
