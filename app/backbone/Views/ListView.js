@@ -32,7 +32,7 @@ var ListView = function (_BiontView$extend) {
 		_this.view = data.view || _ScheduleItemView2.default;
 		_this.listenTo(_this.collection, "sync", _this.render);
 		// this.listenTo(this.collection, "sort", this.render);
-		_this.listenTo(_this.collection, "change", _this.render);
+		// this.listenTo( this.collection, "change", this.render );
 		_this._views = new Map();
 		_this.$el.empty();
 		return _this;
@@ -85,11 +85,8 @@ var ListView = function (_BiontView$extend) {
 		var curView = void 0;
 		models.forEach(function (item, index, array) {
 			if (!_this2._views.has(item)) {
-				var viewArgs = {
-					tagName: 'li',
-					model: item
-				};
-				var itemView = new _this2.view(viewArgs);
+
+				var itemView = new _this2.view(_this2.getItemData(item));
 				_this2._views.set(item, itemView);
 				var $el = itemView.render().$el;
 
@@ -144,6 +141,13 @@ var ListView = function (_BiontView$extend) {
 	ListView.prototype.filterItem = function filterItem(item) {
 		return true;
 		return jQuery.inArray(item.get('status'), this.filterStatus) !== -1;
+	};
+
+	ListView.prototype.getItemData = function getItemData(item) {
+		return {
+			tagName: 'li',
+			model: item
+		};
 	};
 
 	return ListView;

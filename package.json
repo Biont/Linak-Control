@@ -11,7 +11,8 @@
     "jquery": "^3.2.1",
     "material-design-icons-iconfont": "^3.0.3",
     "materialize-clockpicker": "^1.0.1",
-    "materialize-css": "^0.98.2"
+    "materialize-css": "^0.98.2",
+    "progressbar.js": "^1.0.1"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",

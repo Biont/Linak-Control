@@ -44,9 +44,9 @@ var _TextView = require("./TextView");
 
 var _TextView2 = _interopRequireDefault(_TextView);
 
-var _ListView = require("./ListView.js");
+var _LinakListView = require("./LinakListView.js");
 
-var _ListView2 = _interopRequireDefault(_ListView);
+var _LinakListView2 = _interopRequireDefault(_LinakListView);
 
 var _ScheduleItemView = require("./ScheduleItemView.js");
 
@@ -72,6 +72,7 @@ var AppView = function (_BiontView$extend) {
 
 		var _this2 = _possibleConstructorReturn(this, _BiontView$extend.call(this, data, options));
 
+		_this2.settings = data.settings;
 		_this2.collection = data.collection;
 		_this2.deviceFound = false;
 		_this2.showingAlert = false;
@@ -108,12 +109,16 @@ var AppView = function (_BiontView$extend) {
 	};
 
 	AppView.prototype.openSettings = function openSettings() {
+		var _this3 = this;
+
 		var modal = new _ModalView2.default({
 			header: 'Settings',
 			closeBtnText: 'Save',
 			subViews: {
 				content: function content() {
-					return new _AppSettingsView2.default();
+					return new _AppSettingsView2.default({
+						model: _this3.settings
+					});
 				}
 
 			}
@@ -121,6 +126,7 @@ var AppView = function (_BiontView$extend) {
 
 		modal.render();
 		this.listenTo(modal, 'remove:button', function () {
+			this.settings.save();
 			this.render(true);
 		});
 	};
@@ -168,6 +174,7 @@ var AppView = function (_BiontView$extend) {
 	AppView.prototype.render = function render() {
 		var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
+		console.log(this.settings);
 		// super.render();return;
 		if (!this.deviceFound) {
 			if (!this.searchModal) {
@@ -246,7 +253,7 @@ var AppView = function (_BiontView$extend) {
 	};
 
 	AppView.prototype.deleteAll = function deleteAll() {
-		var _this3 = this;
+		var _this4 = this;
 
 		var confirm = new _ConfirmView2.default({
 			header: 'Are you sure?',
@@ -258,10 +265,9 @@ var AppView = function (_BiontView$extend) {
 			},
 			confirm: function confirm() {
 				console.log('DELETING EVERYTHING!!');
-				return;
-				var store = require('electron-settings');
+				var store = require('electron').remote.require('electron-settings');
 				store.deleteAll();
-				_this3.collection.fetch();
+				_this4.collection.fetch();
 			}
 		});
 
@@ -276,13 +282,16 @@ var AppView = function (_BiontView$extend) {
 		"click [data-action]": "onClickAction"
 	}, subViews: {
 		schedule: function schedule(_this) {
-			return new _ListView2.default({
+			return new _LinakListView2.default({
+				settings: _this.settings,
 				view: _ScheduleItemView2.default,
 				collection: _this.collection
 			});
 		},
-		tableHeight: function tableHeight() {
-			return new _TableHeightView2.default();
+		tableHeight: function tableHeight(_this) {
+			return new _TableHeightView2.default({
+				settings: _this.settings
+			});
 		},
 		tableStatistics: function tableStatistics() {
 			return new _TableStatisticsView2.default();

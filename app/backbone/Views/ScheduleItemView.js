@@ -26,6 +26,7 @@ var ScheduleItemView = function (_BiontView$extend) {
 
 		var _this2 = _possibleConstructorReturn(this, _BiontView$extend.call(this, data, options));
 
+		_this2.settings = data.settings;
 		_this2.listenTo(_this2.model, 'destroy', _this2.remove);
 		return _this2;
 	}
@@ -70,6 +71,11 @@ var ScheduleItemView = function (_BiontView$extend) {
 			return new _ScheduleFormView2.default({
 				model: _this.model
 			});
+		}
+	},
+	formatters: {
+		height: function height(value, instance) {
+			return Math.round(value / 98.0 + parseFloat(instance.settings.get('heightOffset'))).toFixed(1) + 'cm';
 		}
 	}
 }));

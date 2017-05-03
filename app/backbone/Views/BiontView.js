@@ -35,7 +35,7 @@ var BiontView = function (_Backbone$View$extend) {
 		key: "template",
 
 		/**
-   * Make all BRViews use our own TemplateLoader
+   * Make all BiontViews use our own TemplateLoader
    *
    * @returns {*}
    */
@@ -54,6 +54,10 @@ var BiontView = function (_Backbone$View$extend) {
 
 		if (data.subViews) {
 			_this.subViews = data.subViews;
+		}
+		_this.subViewInstances = {};
+		if (data.formatters) {
+			_this.formatters = data.formatters;
 		}
 		_this.parent = null;
 		// this.subViews = data.subViews;
@@ -122,11 +126,41 @@ var BiontView = function (_Backbone$View$extend) {
 		return this;
 	};
 
+	/**
+ * Gathers all data that is passed on to the template.
+ *
+ * Can be overloaded by subclasses to add custom data.
+ *
+  * @returns {{}}
+  */
+
+
 	BiontView.prototype.getTemplateData = function getTemplateData() {
 		var data = this.model ? this.model.toJSON() : {};
+		data = this.formatData(data);
+
 		(0, _underscore.extend)(data, _TemplateHelpers2.default);
 		return data;
 	};
+
+	/**
+ * Apply configured subviews to their matching template tags.
+ *
+ * Example:
+ * // View
+ * class Foo extends BiontView.extend({
+ *
+ *     subViews: { myView: () => new BarView() }
+ *
+ * }){}
+ *
+ * // Template
+ * <div cata-subview="myView"></div>
+ *
+ *
+  * @param forced
+  */
+
 
 	BiontView.prototype.autoSubView = function autoSubView(forced) {
 		var _this2 = this;
@@ -149,23 +183,37 @@ var BiontView = function (_Backbone$View$extend) {
 			}
 
 			var view = _this2.subViews[data.subview];
-			if (view instanceof _backbone2.default.View) {
+			var instance = _this2.subViewInstances[data.subview];
+			if (instance && instance instanceof _backbone2.default.View) {
 				if (!forced) {
-					console.log('this is already a spawned view:', view.constructor.name);
-					view.render();
+					instance.render();
 					return;
 				}
-				// view.undelegateEvents();
-			} else if (typeof view === 'function') {
+				instance.remove();
+				delete _this2.subViewInstances[data.subview];
+			}
+			if (typeof view === 'function') {
 				// Support traditional and arrow functions to some extent
 				view = view.call(_this2, _this2);
 				view.parent = _this2;
+				view.setElement($this).render(forced);
+				$this.data('subviewparent', _this2.cid);
+				_this2.subViewInstances[data.subview] = view;
 			}
-			view.setElement($this).render(forced);
-			$this.data('subviewparent', _this2.cid);
-			_this2.subViews[data.subview] = view;
 		});
 	};
+
+	/**
+ * Binds model data to template tags
+ *
+ * Example:
+ *
+ * <div data-bind="name"></div> // This will keep the current value of "name" inside the container's html
+ *
+ * <input type='text' data-bind="name"> // This will instead set the input's value
+ *
+  */
+
 
 	BiontView.prototype.autoBind = function autoBind() {
 		var _this3 = this;
@@ -192,18 +240,37 @@ var BiontView = function (_Backbone$View$extend) {
 		});
 	};
 
+	BiontView.prototype.formatData = function formatData(data) {
+		var _this4 = this;
+
+		(0, _underscore.each)(data, function (value, attr) {
+			data[attr] = _this4.formatAttr(attr, value);
+		});
+		return data;
+	};
+
+	BiontView.prototype.formatAttr = function formatAttr(attr, data) {
+
+		if (!this.formatters[attr]) {
+			return data;
+		}
+		return this.formatters[attr].call(this, data, this);
+	};
+
 	BiontView.prototype.bindDefault = function bindDefault($element, attr) {
-		$element.html(this.model.get(attr));
+		var _this5 = this;
+
+		$element.html(this.formatAttr(attr, this.model.get(attr)));
 		this.listenTo(this.model, 'change', function (model) {
-			return $element.html(model.get(attr));
+			return $element.html(_this5.formatAttr(attr, model.get(attr)));
 		});
 	};
 
 	BiontView.prototype.bindInput = function bindInput($element, attr) {
-		var _this4 = this;
+		var _this6 = this;
 
 		$element.change(function () {
-			return _this4.model.set(attr, $element.val());
+			return _this6.model.set(attr, $element.val());
 		});
 		this.listenTo(this.model, 'change', function (model) {
 			return $element.val(model.get(attr));
@@ -212,7 +279,7 @@ var BiontView = function (_Backbone$View$extend) {
 
 	BiontView.prototype.dump = function dump() {
 		console.log(this.model);
-		return this.model.toJSON();
+		return JSON.stringify(this.getTemplateData());
 	};
 
 	/**
@@ -232,9 +299,15 @@ var BiontView = function (_Backbone$View$extend) {
 		}
 	};
 
+	BiontView.prototype.remove = function remove() {
+		this.undelegateEvents();
+		_Backbone$View$extend.prototype.remove.call(this);
+	};
+
 	return BiontView;
 }(_backbone2.default.View.extend({
-	subViews: {}
+	subViews: {},
+	formatters: {}
 }));
 
 exports.default = BiontView;

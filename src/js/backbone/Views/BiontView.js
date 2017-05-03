@@ -10,7 +10,7 @@ export default class BiontView extends Backbone.View.extend( {
 	formatters: {}
 } ) {
 	/**
-	 * Make all BRViews use our own TemplateLoader
+	 * Make all BiontViews use our own TemplateLoader
 	 *
 	 * @returns {*}
 	 */
@@ -89,6 +89,13 @@ export default class BiontView extends Backbone.View.extend( {
 		return this;
 	}
 
+    /**
+	 * Gathers all data that is passed on to the template.
+	 *
+	 * Can be overloaded by subclasses to add custom data.
+	 *
+     * @returns {{}}
+     */
 	getTemplateData() {
 		let data = this.model ? this.model.toJSON() : {};
 		data = this.formatData( data );
@@ -97,6 +104,23 @@ export default class BiontView extends Backbone.View.extend( {
 		return data;
 	}
 
+    /**
+	 * Apply configured subviews to their matching template tags.
+	 *
+	 * Example:
+	 * // View
+	 * class Foo extends BiontView.extend({
+	 *
+	 *     subViews: { myView: () => new BarView() }
+	 *
+	 * }){}
+	 *
+	 * // Template
+	 * <div cata-subview="myView"></div>
+	 *
+	 *
+     * @param forced
+     */
 	autoSubView( forced ) {
 		$( '[data-subview]', this.$el ).each( ( idx, obj ) => {
 			let $this = $( obj ), data = $this.data();
@@ -137,6 +161,16 @@ export default class BiontView extends Backbone.View.extend( {
 		} );
 	}
 
+    /**
+	 * Binds model data to template tags
+	 *
+	 * Example:
+	 *
+	 * <div data-bind="name"></div> // This will keep the current value of "name" inside the container's html
+	 *
+	 * <input type='text' data-bind="name"> // This will instead set the input's value
+	 *
+     */
 	autoBind() {
 		if ( !this.model ) {
 			return;
