@@ -9,12 +9,10 @@ export default class SearchDeviceView extends BiontView.extend( {} ) {
 		this.text = data.text || '';
 	}
 
-	/**
-	 * Very basic render function.
-	 * @returns {TimePickerView}
-	 */
-	render() {
-		super.render( { text: this.text } );
+	getTemplateData() {
+		let data = super.getTemplateData();
+		data.text = this.text;
+		return data;
 	}
 
 }

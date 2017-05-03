@@ -10,6 +10,7 @@ const namespace = 'ScheduleItem';
 const deviceFound = 'deviceFound';
 const deviceLost = 'deviceLost';
 const notificationKey = 'notifications';
+const alertKey = 'alert';
 const tableHeightKey = 'table-height';
 const statisticsKey = 'table-statistics';
 
@@ -78,11 +79,12 @@ export default class Background {
 		subscriptions.register( notificationKey );
 		subscriptions.register( tableHeightKey );
 		subscriptions.register( statisticsKey );
+		subscriptions.register( alertKey );
 
 		this.linak.on( 'deviceFound', () => {
 			subscriptions.trigger( deviceFound );
 			this.scheduler.enqueue();
-			this.loopInterval = setInterval( () => this.loop(), 1000 );
+			this.loopInterval = setInterval( () => this.loop(), heightTickRate );
 		} );
 
 		this.linak.on( 'deviceLost', () => {
@@ -91,6 +93,19 @@ export default class Background {
 			}
 			this.scheduler.dequeue();
 			clearInterval( this.loopInterval );
+		} );
+
+		this.linak.on( 'permissionProblem', ( error ) => {
+			console.log( 'sending alert' );
+
+			if ( this.rendererReady ) {
+				console.log( 'actually sending alert' );
+
+				subscriptions.trigger( alertKey, {
+					title  : 'Permission Problem',
+					message: `I have found a device, but do not have permission to talk to it. This is the full error message: ${error}`
+				} );
+			}
 		} );
 		this.linak.poll();
 

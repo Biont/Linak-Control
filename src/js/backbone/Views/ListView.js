@@ -22,7 +22,7 @@ export default class ListView extends BiontView.extend( {
 	/**
 	 * Handle output
 	 */
-	render() {
+	render( force = false ) {
 		/**
 		 * Don't render if the list cannot be seen.
 		 * Keep an eye on this and see if it causes problems
@@ -34,6 +34,10 @@ export default class ListView extends BiontView.extend( {
 
 		if ( this.collection.isEmpty() ) {
 			return this;
+		}
+
+		if(force){
+			this._views.clear();
 		}
 		// let models = this.collection.filter(this.filterItem.bind(this));
 		let models = this.collection.models;
@@ -79,7 +83,7 @@ export default class ListView extends BiontView.extend( {
 		} );
 
 		this.$el.collapsible();
-        Materialize.updateTextFields();
+		Materialize.updateTextFields();
 		return this;
 	}
 

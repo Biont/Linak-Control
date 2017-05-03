@@ -63,8 +63,7 @@ var ScheduleItemView = function (_BiontView$extend) {
 	return ScheduleItemView;
 }(_BiontView2.default.extend({
 	events: {
-		'click [data-action]': 'onButtonClick',
-		'click [data-action="save"]': 'save'
+		'click [data-action]': 'onButtonClick'
 	},
 	subViews: {
 		form: function form(_this) {

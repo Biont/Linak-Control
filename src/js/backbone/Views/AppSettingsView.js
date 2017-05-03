@@ -1,3 +1,5 @@
-/**
- * Created by biont on 27.04.17.
- */
+import {ipcRenderer, remote} from "electron";
+import BiontView from "./BiontView.js";
+export default class AppSettingsView extends BiontView.extend( {} ) {
+
+}

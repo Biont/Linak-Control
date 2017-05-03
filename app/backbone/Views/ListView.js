@@ -46,6 +46,8 @@ var ListView = function (_BiontView$extend) {
 	ListView.prototype.render = function render() {
 		var _this2 = this;
 
+		var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
 		/**
    * Don't render if the list cannot be seen.
    * Keep an eye on this and see if it causes problems
@@ -57,6 +59,10 @@ var ListView = function (_BiontView$extend) {
 
 		if (this.collection.isEmpty()) {
 			return this;
+		}
+
+		if (force) {
+			this._views.clear();
 		}
 		// let models = this.collection.filter(this.filterItem.bind(this));
 		var models = this.collection.models;

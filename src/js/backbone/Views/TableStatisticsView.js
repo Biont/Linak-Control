@@ -17,8 +17,8 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 	 * Very basic render function.
 	 * @returns {TableHeightView}
 	 */
-	render() {
-		if ( !this.chart ) {
+	render( force = false ) {
+		if ( !this.chart || force ) {
 			console.log( 'redrawing chart' );
 			this.$el.html( '<canvas id="myChart" width="400" height="250"></canvas>' );
 			this.chart = new Chart( $( '#myChart', this.$el ), {
@@ -47,7 +47,7 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 					tooltips : {
 						mode     : 'label',
 						callbacks: {
-							title: ( tooltipItem, data ) => this.formatSignalToCm( data.labels[ tooltipItem[ 0 ].index ] )+' ('+data.labels[ tooltipItem[ 0 ].index ]+')',
+							title: ( tooltipItem, data ) => this.formatSignalToCm( data.labels[ tooltipItem[ 0 ].index ] ) + ' (' + data.labels[ tooltipItem[ 0 ].index ] + ')',
 							label: ( tooltipItem, data ) => this.formatMsToMin( data.datasets[ 0 ].data[ tooltipItem.index ] )
 						}
 					},

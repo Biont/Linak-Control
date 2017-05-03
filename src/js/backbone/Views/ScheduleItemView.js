@@ -4,7 +4,6 @@ import ScheduleFormView from "./ScheduleFormView";
 export default class ScheduleItemView extends BiontView.extend( {
 	events  : {
 		'click [data-action]'       : 'onButtonClick',
-		'click [data-action="save"]': 'save',
 	},
 	subViews: {
 		form: ( _this ) => new ScheduleFormView( {

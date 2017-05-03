@@ -1,3 +1,4 @@
+import {extend} from "underscore";
 import {Renderer as background} from "../../util/ipcHandler";
 import BiontView from "./BiontView";
 
@@ -12,24 +13,22 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 		this.listenToTableHeight();
 	}
 
-	/**
-	 * Very basic render function.
-	 * @returns {TableHeightView}
-	 */
-	render() {
-		super.render( this.tableData );
-	}
-
 	listenToTableHeight() {
 
 		background.subscribe( 'table-height', ( event, data ) => {
 			if ( data.signal && data.cm ) {
 				this.tableData = data;
-				this.render();
+				this.render( true );
 			}
 
 		} );
 
+	}
+
+	getTemplateData() {
+		let data = super.getTemplateData();
+		extend( data, this.tableData );
+		return data;
 	}
 
 }
