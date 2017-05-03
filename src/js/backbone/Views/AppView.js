@@ -125,7 +125,7 @@ export default class AppView extends BiontView.extend( {
 	}
 
 	render( force = false ) {
-		console.log( this.settings );
+		// console.log( this.settings );
 		// super.render();return;
 		if ( !this.deviceFound ) {
 			if ( !this.searchModal ) {
@@ -212,7 +212,6 @@ export default class AppView extends BiontView.extend( {
 
 				},
 				confirm : () => {
-					console.log( 'DELETING EVERYTHING!!' );
 					const store = require('electron').remote.require('electron-settings');
 					store.deleteAll();
 					this.collection.fetch();
