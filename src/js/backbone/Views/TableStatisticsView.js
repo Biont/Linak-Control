@@ -1,4 +1,4 @@
-import {ipcRenderer, remote} from "electron";
+import {Renderer as background} from "../../util/ipcHandler";
 import BiontView from "./BiontView";
 import Chart from "chart.js";
 
@@ -9,8 +9,7 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 	constructor( data, options ) {
 		super( data, options );
 		this.statistics = {};
-
-		this.listenToTableStatistics();
+		this.subscription = this.listenToTableStatistics();
 	}
 
 	/**
@@ -19,7 +18,6 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 	 */
 	render( force = false ) {
 		if ( !this.chart || force ) {
-			console.log( 'redrawing chart' );
 			this.$el.html( '<canvas id="myChart" width="400" height="250"></canvas>' );
 			this.chart = new Chart( $( '#myChart', this.$el ), {
 				type   : 'line',
@@ -54,8 +52,6 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 				}
 			} );
 		} else {
-			console.log( 'updating chart' );
-
 			this.chart.config.data = this.generateData();
 			this.chart.update();
 		}
@@ -72,13 +68,22 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 	}
 
 	listenToTableStatistics() {
-		let reply = 'app-statistics';
-		ipcRenderer.send( 'subscribe-table-statistics', { reply } );
-		ipcRenderer.on( reply, ( event, data ) => {
+		return background.subscribe( 'app-statistics', ( event, data ) => {
 			this.statistics = data;
 			this.render();
 		} );
 
+	}
+
+	stopListeningToTableStatistics() {
+		if ( this.subscription ) {
+			background.unsubscribe( 'app-statistics', this.subscription );
+		}
+	}
+
+	remove() {
+		this.stopListeningToTableStatistics();
+		super.remove();
 	}
 
 	generateData() {

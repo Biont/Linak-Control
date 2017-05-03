@@ -1,1 +1,19 @@
-SETTINGS!
+<label for="heightOffset_<%= this.cid %>">Height offset</label>
+<input
+	data-bind="heightOffset"
+	id="heightOffset_<%= this.cid %>"
+	type="number"
+	value="<%= heightOffset %>"
+	step="0.1"
+	min="0"
+>
+
+<label for="maxHeight<%= this.cid %>">Max Height</label>
+<input
+	data-bind="maxHeight"
+	id="maxHeight<%= this.cid %>"
+	type="number"
+	value="<%= maxHeight %>"
+	step="0.1"
+	min="0"
+>

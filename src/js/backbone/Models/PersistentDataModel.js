@@ -1,5 +1,5 @@
 import {ipcRenderer, remote} from "electron";
-import Backbone from "backbone";
+import BiontModel from "./BiontModel";
 import {isUndefined, result} from "underscore";
 
 /** Get the Deferred status from $ if we have jQuery, otherwise use Backbone's
@@ -15,7 +15,7 @@ function getDeferred() {
 /**
  * Sets up a Backbone Model to use the WP REST API
  */
-class PersistentDataModel extends Backbone.Model {
+class PersistentDataModel extends BiontModel {
 
 	sync( method, model, options ) {
 		const syncDfd = getDeferred();

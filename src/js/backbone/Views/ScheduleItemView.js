@@ -2,17 +2,21 @@ import BiontView from "./BiontView.js";
 import ScheduleFormView from "./ScheduleFormView";
 
 export default class ScheduleItemView extends BiontView.extend( {
-	events  : {
-		'click [data-action]'       : 'onButtonClick',
+	events    : {
+		'click [data-action]': 'onButtonClick',
 	},
-	subViews: {
+	subViews  : {
 		form: ( _this ) => new ScheduleFormView( {
 			model: _this.model
 		} )
+	},
+	formatters: {
+		height: ( value, instance ) => Math.round( value / 98.0 + parseFloat( instance.settings.get( 'heightOffset' ) ) ).toFixed( 1 ) + 'cm'
 	}
 } ) {
 	constructor( data, options ) {
 		super( data, options );
+		this.settings = data.settings;
 		this.listenTo( this.model, 'destroy', this.remove );
 	}
 
@@ -41,4 +45,5 @@ export default class ScheduleItemView extends BiontView.extend( {
 			super.remove()
 		} );
 	}
+
 }

@@ -10,7 +10,7 @@ import TableHeightView from "./TableHeightView";
 import TableStatisticsView from "./TableStatisticsView";
 import SearchDeviceView from "./SearchDeviceView";
 import TextView from "./TextView";
-import ListView from "./ListView.js";
+import LinakListView from "./LinakListView.js";
 import ScheduleItemView from "./ScheduleItemView.js";
 import ScheduleItem from "../Models/ScheduleItem.js";
 
@@ -20,11 +20,14 @@ export default class AppView extends BiontView.extend( {
 		"click [data-delete-all]": "deleteAll",
 		"click [data-action]"    : "onClickAction",
 	}, subViews: {
-		schedule       : ( _this ) => new ListView( {
+		schedule       : ( _this ) => new LinakListView( {
+			settings  : _this.settings,
 			view      : ScheduleItemView,
 			collection: _this.collection
 		} ),
-		tableHeight    : () => new TableHeightView(),
+		tableHeight    : ( _this ) => new TableHeightView( {
+			settings: _this.settings,
+		} ),
 		tableStatistics: () => new TableStatisticsView()
 	}
 } ) {
@@ -32,6 +35,7 @@ export default class AppView extends BiontView.extend( {
 	constructor( data, options ) {
 
 		super( data, options );
+		this.settings = data.settings;
 		this.collection = data.collection;
 		this.deviceFound = false;
 		this.showingAlert = false;
@@ -65,7 +69,9 @@ export default class AppView extends BiontView.extend( {
 				header      : 'Settings',
 				closeBtnText: 'Save',
 				subViews    : {
-					content: () => new AppSettingsView()
+					content: () => new AppSettingsView( {
+						model: this.settings
+					} )
 
 				}
 			}
@@ -73,6 +79,7 @@ export default class AppView extends BiontView.extend( {
 
 		modal.render();
 		this.listenTo( modal, 'remove:button', function() {
+			this.settings.save();
 			this.render( true )
 		} );
 	}
@@ -118,6 +125,7 @@ export default class AppView extends BiontView.extend( {
 	}
 
 	render( force = false ) {
+		console.log( this.settings );
 		// super.render();return;
 		if ( !this.deviceFound ) {
 			if ( !this.searchModal ) {
@@ -205,8 +213,7 @@ export default class AppView extends BiontView.extend( {
 				},
 				confirm : () => {
 					console.log( 'DELETING EVERYTHING!!' );
-					return;
-					const store = require( 'electron-settings' );
+					const store = require('electron').remote.require('electron-settings');
 					store.deleteAll();
 					this.collection.fetch();
 

@@ -1,12 +1,13 @@
 import Backbone from "backbone";
-import {each, extend} from "underscore";
+import {each, extend, mapObject} from "underscore";
 
 import fs from "fs";
 import TemplateHelpers from "../TemplateHelpers";
 const tplDir = '../../tpl/';
 
 export default class BiontView extends Backbone.View.extend( {
-	subViews: {}
+	subViews  : {},
+	formatters: {}
 } ) {
 	/**
 	 * Make all BRViews use our own TemplateLoader
@@ -21,6 +22,10 @@ export default class BiontView extends Backbone.View.extend( {
 		super( data, options );
 		if ( data.subViews ) {
 			this.subViews = data.subViews;
+		}
+		this.subViewInstances = {};
+		if ( data.formatters ) {
+			this.formatters = data.formatters;
 		}
 		this.parent = null;
 		// this.subViews = data.subViews;
@@ -86,6 +91,8 @@ export default class BiontView extends Backbone.View.extend( {
 
 	getTemplateData() {
 		let data = this.model ? this.model.toJSON() : {};
+		data = this.formatData( data );
+
 		extend( data, TemplateHelpers );
 		return data;
 	}
@@ -108,22 +115,24 @@ export default class BiontView extends Backbone.View.extend( {
 			}
 
 			let view = this.subViews[ data.subview ];
-			if ( view instanceof Backbone.View ) {
+			let instance = this.subViewInstances[ data.subview ];
+			if ( instance && instance instanceof Backbone.View ) {
 				if ( !forced ) {
-					console.log( 'this is already a spawned view:', view.constructor.name );
-					view.render();
+					instance.render();
 					return;
 				}
-				// view.undelegateEvents();
+				instance.remove();
+				delete this.subViewInstances[ data.subview ];
 
-			} else if ( typeof view === 'function' ) {
+			}
+			if ( typeof view === 'function' ) {
 				// Support traditional and arrow functions to some extent
 				view = view.call( this, this );
 				view.parent = this;
+				view.setElement( $this ).render( forced );
+				$this.data( 'subviewparent', this.cid );
+				this.subViewInstances[ data.subview ] = view;
 			}
-			view.setElement( $this ).render( forced );
-			$this.data( 'subviewparent', this.cid );
-			this.subViews[ data.subview ] = view;
 
 		} );
 	}
@@ -150,9 +159,25 @@ export default class BiontView extends Backbone.View.extend( {
 		} );
 	}
 
+	formatData( data ) {
+
+		each( data, ( value, attr ) => {
+			data[ attr ] = this.formatAttr( attr, value )
+		} );
+		return data;
+	}
+
+	formatAttr( attr, data ) {
+
+		if ( !this.formatters[ attr ] ) {
+			return data;
+		}
+		return this.formatters[ attr ].call( this, data, this );
+	}
+
 	bindDefault( $element, attr ) {
-		$element.html( this.model.get( attr ) );
-		this.listenTo( this.model, 'change', ( model ) => $element.html( model.get( attr ) ) );
+		$element.html( this.formatAttr( attr, this.model.get( attr ) ) );
+		this.listenTo( this.model, 'change', ( model ) => $element.html( this.formatAttr( attr, model.get( attr ) ) ) );
 	}
 
 	bindInput( $element, attr ) {
@@ -162,7 +187,7 @@ export default class BiontView extends Backbone.View.extend( {
 
 	dump() {
 		console.log( this.model );
-		return this.model.toJSON();
+		return JSON.stringify( this.getTemplateData() );
 	}
 
 	/**
@@ -179,6 +204,11 @@ export default class BiontView extends Backbone.View.extend( {
 			view.setElement( $el ).render();
 
 		}
+	}
+
+	remove() {
+		this.undelegateEvents();
+		super.remove();
 	}
 
 }

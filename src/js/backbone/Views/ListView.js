@@ -14,7 +14,7 @@ export default class ListView extends BiontView.extend( {
 		this.view = data.view || ItemView;
 		this.listenTo( this.collection, "sync", this.render );
 		// this.listenTo(this.collection, "sort", this.render);
-		this.listenTo( this.collection, "change", this.render );
+		// this.listenTo( this.collection, "change", this.render );
 		this._views = new Map();
 		this.$el.empty();
 	}
@@ -36,7 +36,7 @@ export default class ListView extends BiontView.extend( {
 			return this;
 		}
 
-		if(force){
+		if ( force ) {
 			this._views.clear();
 		}
 		// let models = this.collection.filter(this.filterItem.bind(this));
@@ -60,11 +60,8 @@ export default class ListView extends BiontView.extend( {
 		let curView;
 		models.forEach( ( item, index, array ) => {
 			if ( !this._views.has( item ) ) {
-				let viewArgs = {
-					tagName: 'li',
-					model  : item,
-				};
-				let itemView = new this.view( viewArgs );
+
+				let itemView = new this.view( this.getItemData( item ) );
 				this._views.set( item, itemView );
 				let $el = itemView.render().$el;
 
@@ -113,5 +110,12 @@ export default class ListView extends BiontView.extend( {
 	filterItem( item ) {
 		return true;
 		return jQuery.inArray( item.get( 'status' ), this.filterStatus ) !== -1;
+	}
+
+	getItemData( item ) {
+		return {
+			tagName: 'li',
+			model  : item,
+		};
 	}
 }

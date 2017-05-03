@@ -12,7 +12,7 @@ const deviceLost = 'deviceLost';
 const notificationKey = 'notifications';
 const alertKey = 'alert';
 const tableHeightKey = 'table-height';
-const statisticsKey = 'table-statistics';
+const statisticsKey = 'app-statistics';
 
 const heightTickRate = 1000;
 const statisticsTickRate = 1000;
