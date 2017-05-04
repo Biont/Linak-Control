@@ -1,23 +1,17 @@
-import {ipcRenderer, remote} from "electron";
+import {Renderer as background} from "../../util/ipcHandler";
 import AppSettingsModel from "./backbone/Models/AppSettings";
 import AppView from "./backbone/Views/AppView";
 import ScheduleCollection from "./backbone/Collections/ScheduleCollection.js";
 import ScheduleItem from "./backbone/Models/ScheduleItem";
 
 class App {
-	/**
-	 * Configure the sudo prompt
-	 */
-	constructor() {
-
-	}
 
 	init() {
 		this.listenToNotifications();
 		this.settings = new AppSettingsModel( {
-			id          : 'mainApp',
-			heightOffset: 62.5,
-			maxHeight   : 6449,
+			id              : 'mainApp',
+			heightOffset    : 62.5,
+			maxHeight       : 6449,
 			enableStatistics: true
 		} );
 		this.settings.fetch( {
@@ -40,14 +34,11 @@ class App {
 	}
 
 	listenToNotifications() {
-		let reply = 'app-notify';
-		ipcRenderer.send( 'subscribe-notifications', { reply } );
-		ipcRenderer.on( reply, ( event, data ) => {
+		background.subscribe( 'subscribe-notifications', ( event, data ) => {
 			let notification = new Notification( 'Linak Control', {
 				body: data.message
 			} );
 		} );
-
 	}
 }
 module.exports = App;
