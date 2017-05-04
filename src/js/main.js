@@ -65,12 +65,15 @@ class Main {
 	}
 
 	spawnApp() {
-		win = this.getWindow();
-		this.tray = this.getTray();
 
 		app.on( 'browser-window-created', function( e, window ) {
 			window.setMenu( null );
 		} );
+
+
+		win = this.getWindow();
+		this.tray = this.getTray();
+
 
 		(
 			new Background.default()
