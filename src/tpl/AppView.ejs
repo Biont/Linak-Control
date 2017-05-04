@@ -12,10 +12,15 @@
 		<h5>Schedule</h5>
 		<ul data-subview="schedule" class="collapsible" data-collapsible="accordion"></ul>
 	</div>
-	<div class="col s12 m7">
 
+	<% if( this.statisticsEnabled() ){ %>
+
+	<div class="col s12 m7">
 		<div data-subview="tableStatistics"></div>
 	</div>
+
+	<% } %>
+
 </div>
 <div class="fixed-action-btn">
 	<a data-add class="btn-floating btn-large waves-effect waves-light indigo"><i

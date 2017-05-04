@@ -212,7 +212,7 @@ export default class AppView extends BiontView.extend( {
 
 				},
 				confirm : () => {
-					const store = require('electron').remote.require('electron-settings');
+					const store = require( 'electron' ).remote.require( 'electron-settings' );
 					store.deleteAll();
 					this.collection.fetch();
 
@@ -222,6 +222,12 @@ export default class AppView extends BiontView.extend( {
 
 		confirm.render();
 
+	}
+
+	statisticsEnabled() {
+		return (
+			this.settings.get( 'enableStatistics' )
+		);
 	}
 
 };
