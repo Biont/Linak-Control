@@ -17,6 +17,18 @@ Click save. The Schedule item will now be editable in the list.
 
 Add new items as you wish
 
+## Development
+
+To setup the project, do the following:
+
+* Clone the repository
+* Inside the cloned repo, do a ```npm install``` and wait for it to finish
+* Transpile the code once by running ```grunt```
+
+When actively writing code, you might want to have ```grunt watch``` running to automatically transpile your changes.
+
+Feel free to open issues and send pull requests!
+
 ## Credits
 [Linak USB driver](https://github.com/ranma1988/usb2lin06-HID-in-linux-for-LINAK-Desk-Control-Cable) by [ranma1988](https://github.com/ranma1988)
 
