@@ -17,7 +17,8 @@ class App {
 		this.settings = new AppSettingsModel( {
 			id          : 'mainApp',
 			heightOffset: 62.5,
-			maxHeight   : 6449
+			maxHeight   : 6449,
+			enableStatistics: true
 		} );
 		this.settings.fetch( {
 			success: () => {

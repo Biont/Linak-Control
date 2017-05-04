@@ -89,13 +89,13 @@ export default class BiontView extends Backbone.View.extend( {
 		return this;
 	}
 
-    /**
+	/**
 	 * Gathers all data that is passed on to the template.
 	 *
 	 * Can be overloaded by subclasses to add custom data.
 	 *
-     * @returns {{}}
-     */
+	 * @returns {{}}
+	 */
 	getTemplateData() {
 		let data = this.model ? this.model.toJSON() : {};
 		data = this.formatData( data );
@@ -104,7 +104,7 @@ export default class BiontView extends Backbone.View.extend( {
 		return data;
 	}
 
-    /**
+	/**
 	 * Apply configured subviews to their matching template tags.
 	 *
 	 * Example:
@@ -119,8 +119,8 @@ export default class BiontView extends Backbone.View.extend( {
 	 * <div cata-subview="myView"></div>
 	 *
 	 *
-     * @param forced
-     */
+	 * @param forced
+	 */
 	autoSubView( forced ) {
 		$( '[data-subview]', this.$el ).each( ( idx, obj ) => {
 			let $this = $( obj ), data = $this.data();
@@ -161,7 +161,7 @@ export default class BiontView extends Backbone.View.extend( {
 		} );
 	}
 
-    /**
+	/**
 	 * Binds model data to template tags
 	 *
 	 * Example:
@@ -170,7 +170,7 @@ export default class BiontView extends Backbone.View.extend( {
 	 *
 	 * <input type='text' data-bind="name"> // This will instead set the input's value
 	 *
-     */
+	 */
 	autoBind() {
 		if ( !this.model ) {
 			return;
@@ -215,8 +215,26 @@ export default class BiontView extends Backbone.View.extend( {
 	}
 
 	bindInput( $element, attr ) {
-		$element.change( () => this.model.set( attr, $element.val() ) );
-		this.listenTo( this.model, 'change', ( model ) => $element.val( model.get( attr ) ) );
+		console.log( 'binding...', $element.attr( 'type' ) )
+		switch ( $element.attr( 'type' ) ) {
+			case 'checkbox':
+				//TODO: allow setting up a [data-falsevalue="foo"] for non-boolean values?
+				$element.change( () => this.model.set( attr, $element.prop( 'checked' ) ) );
+				this.listenTo( this.model, 'change', ( model ) => {
+					$element.prop( 'checked', (
+						model.get( attr )
+					) );
+				} );
+				$element.prop( 'checked', (
+					this.model.get( attr )
+				) );
+				break;
+			default:
+				$element.change( () => this.model.set( attr, $element.val() ) );
+				this.listenTo( this.model, 'change', ( model ) => $element.val( model.get( attr ) ) );
+				$element.val( this.model.get( attr ) );
+				break;
+		}
 	}
 
 	dump() {
