@@ -12,4 +12,12 @@ export default class LinakListView extends ListView.extend( {} ) {
 		data.settings = this.settings;
 		return data;
 	}
+
+	render() {
+		super.render();
+		this.$el.collapsible( {
+			accordion: false
+		} );
+		Materialize.updateTextFields();
+	}
 };

@@ -79,8 +79,7 @@ export default class ListView extends BiontView.extend( {
 			curView = this._views.get( item );
 		} );
 
-		this.$el.collapsible();
-		Materialize.updateTextFields();
+
 		return this;
 	}
 
