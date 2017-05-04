@@ -101,10 +101,10 @@ export default class LinakUtil {
 	}
 
 	getHeight( callback ) {
-		// try {
 		exec( __dirname + '/bin/example-getHeight', ( error, stdout, stderr ) => {
 			if ( error ) {
 				this.handleError( error );
+				return;
 			}
 			let parts = stdout.split( /[\n\s]+/ );
 			let data = {
@@ -114,11 +114,6 @@ export default class LinakUtil {
 			};
 			callback( error, data )
 		} );
-		// } catch ( ex ) {
-		// 	console.error( 'getHeight error ' + ex.code, ex.toString() );
-		// 	console.error( 'getHeight error ' + ex.errno, ex.signal );
-		//
-		// }
 
 	}
 
@@ -133,6 +128,7 @@ export default class LinakUtil {
 				this.poll();
 				break;
 			}
+			case errorCodes.LIBUSB_ERROR_BUSY:
 			case errorCodes.DEVICE_BUSY:
 				console.error( `Device is currently busy: ${error}` );
 				break;
