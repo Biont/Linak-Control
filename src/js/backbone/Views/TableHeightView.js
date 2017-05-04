@@ -14,12 +14,21 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 		this.curHeight = 0;
 		this.tableData = { signal: '0', cm: '0', raw: 'Listening....' };
 
-		this.subscription = this.listenToTableHeight();
+		this.listenToTableHeight();
+
+		this.capture( 'windowHidden', () => {
+			console.log('table height off')
+			this.stopListeningToTableHeight()
+		} );
+		this.capture( 'windowShown', () => {
+			console.log('table height on')
+			this.listenToTableHeight()
+		} );
 	}
 
 	listenToTableHeight() {
 
-		return background.subscribe( 'table-height', ( event, data ) => {
+		return this.subscription =  background.subscribe( 'table-height', ( event, data ) => {
 			if ( data.signal && data.cm ) {
 				if ( this.curHeight !== data.signal ) {
 					this.curHeight = data.signal;
@@ -86,7 +95,9 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 	}
 
 	formatHeight( value ) {
-		return ( value / 98.0 + parseFloat( this.settings.get( 'heightOffset' ) ) ).toFixed( 2 ) + 'cm'
+		return (
+				value / 98.0 + parseFloat( this.settings.get( 'heightOffset' ) )
+			).toFixed( 2 ) + 'cm'
 	}
 
 	getClamped() {

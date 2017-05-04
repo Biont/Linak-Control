@@ -47,7 +47,21 @@ export default class AppView extends BiontView.extend( {
 		// this.devShim();
 
 		this.listenTo( this.collection, 'empty', this.open );
+		document.addEventListener( "webkitVisibilityState", () => {
+			console.log( 'change!', document.hidden )
+			console.log( 'change!', document.visibilityState )
 
+			if ( document.hidden ) {
+				console.log( 'off' )
+
+				this.bubble( 'windowHidden', {}, false );
+
+			} else {
+				console.log( ' on' )
+
+				this.bubble( 'windowShown', {}, false );
+			}
+		}, false );
 		background.emit( 'rendererReady' );
 	}
 

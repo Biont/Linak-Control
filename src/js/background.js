@@ -13,6 +13,7 @@ const notificationKey = 'notifications';
 const alertKey = 'alert';
 const tableHeightKey = 'table-height';
 const statisticsKey = 'app-statistics';
+const windowHiddenKey = 'window-hidden';
 
 const heightTickRate = 1000;
 const statisticsTickRate = 1000;
@@ -21,7 +22,8 @@ const statisticsTickRate = 1000;
  * Runs in the background and performs actions when needed
  */
 export default class Background {
-	constructor() {
+	constructor( window ) {
+		this.window = window;
 		this.linak = new Linak();
 		this.rendererReady = false;
 
@@ -73,6 +75,8 @@ export default class Background {
 
 	init() {
 
+		// subscriptions.register( windowHiddenKey );
+
 		subscriptions.register( deviceFound );
 		subscriptions.register( deviceLost );
 
@@ -81,10 +85,13 @@ export default class Background {
 		subscriptions.register( statisticsKey );
 		subscriptions.register( alertKey );
 
+		this.window.on( 'hide', () => {
+			this.stopLoop();
+		} );
 		this.linak.on( 'deviceFound', () => {
 			subscriptions.trigger( deviceFound );
 			this.scheduler.enqueue();
-			this.loopInterval = setInterval( () => this.loop(), heightTickRate );
+			this.startLoop();
 		} );
 
 		this.linak.on( 'deviceLost', () => {
@@ -92,7 +99,7 @@ export default class Background {
 				subscriptions.trigger( deviceLost );
 			}
 			this.scheduler.dequeue();
-			clearInterval( this.loopInterval );
+			this.stopLoop()
 		} );
 
 		this.linak.on( 'permissionProblem', ( error ) => {
@@ -151,6 +158,14 @@ export default class Background {
 
 			event.sender.send( request.replyContext, response );
 		} );
+	}
+
+	startLoop() {
+		this.loopInterval = setInterval( () => this.loop(), heightTickRate );
+	}
+
+	stopLoop() {
+		clearInterval( this.loopInterval );
 	}
 
 	loop() {

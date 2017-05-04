@@ -9,7 +9,14 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 	constructor( data, options ) {
 		super( data, options );
 		this.statistics = {};
-		this.subscription = this.listenToTableStatistics();
+		this.listenToTableStatistics();
+
+		this.capture( 'windowHidden', () => {
+			this.stopListeningToTableStatistics()
+		} );
+		this.capture( 'windowShown', () => {
+			this.listenToTableStatistics()
+		} );
 	}
 
 	/**
@@ -68,7 +75,7 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 	}
 
 	listenToTableStatistics() {
-		return background.subscribe( 'app-statistics', ( event, data ) => {
+		return this.subscription = background.subscribe( 'app-statistics', ( event, data ) => {
 			this.statistics = data;
 			this.render();
 		} );

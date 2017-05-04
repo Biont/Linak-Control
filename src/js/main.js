@@ -70,13 +70,11 @@ class Main {
 			window.setMenu( null );
 		} );
 
-
 		win = this.getWindow();
 		this.tray = this.getTray();
 
-
 		(
-			new Background.default()
+			new Background.default( win )
 		).init();
 
 	}

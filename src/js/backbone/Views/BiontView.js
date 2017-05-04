@@ -5,6 +5,40 @@ import fs from "fs";
 import TemplateHelpers from "../TemplateHelpers";
 const tplDir = '../../tpl/';
 
+const eventStorage = new Map();
+
+const _bubble = ( view, handle, data, upwards ) => {
+	// console.log( '_bubble', [ view.constructor.name, handle, data, upwards ] );
+	if ( upwards ) {
+
+		if ( !view.parent ) {
+			return;
+		}
+		_trigger( view.parent, handle, data, upwards );
+		_bubble( view.parent, handle, data, upwards );
+	} else {
+		each( view.subViewInstances, ( child, name ) => {
+			// console.log( 'bubbling down to ' + child.constructor.name );
+			_trigger( child, handle, data, upwards );
+			_bubble( child, handle, data, upwards );
+		} );
+	}
+
+};
+
+const _trigger = ( view, handle, data, upwards ) => {
+	if ( !eventStorage.has( view ) ) {
+		return;
+	}
+	let listeners = eventStorage.get( view );
+	if ( !listeners[ handle ] ) {
+		return;
+	}
+	listeners[ handle ].forEach( ( callback ) => {
+		callback.call( this, data, upwards );
+	} );
+};
+
 export default class BiontView extends Backbone.View.extend( {
 	subViews  : {},
 	formatters: {}
@@ -215,7 +249,6 @@ export default class BiontView extends Backbone.View.extend( {
 	}
 
 	bindInput( $element, attr ) {
-		console.log( 'binding...', $element.attr( 'type' ) )
 		switch ( $element.attr( 'type' ) ) {
 			case 'checkbox':
 				//TODO: allow setting up a [data-falsevalue="foo"] for non-boolean values?
@@ -261,6 +294,26 @@ export default class BiontView extends Backbone.View.extend( {
 	remove() {
 		this.undelegateEvents();
 		super.remove();
+	}
+
+	bubble( handle, data, upwards = true ) {
+		_bubble( this, handle, data, upwards );
+	}
+
+	capture( handle, callback ) {
+		let listeners;
+		if ( eventStorage.has( this ) ) {
+			listeners = eventStorage.get( this );
+		} else {
+			listeners = {};
+		}
+
+		if ( !listeners[ handle ] ) {
+			listeners[ handle ] = [];
+		}
+		listeners[ handle ].push( callback );
+		eventStorage.set( this, listeners );
+		console.log( this.constructor.name + ' listening', eventStorage );
 	}
 
 }
