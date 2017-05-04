@@ -102,3 +102,14 @@
 .wiggle:hover {
     animation: none;
 }
+
+.collapsible-header i {
+    -webkit-transition: all 0.4s cubic-bezier(0.57, 0.26, 0.51, 1.33); /* Safari */
+    transition: all 0.4s cubic-bezier(0.57, 0.26, 0.51, 1.33);
+}
+
+.collapsible-header.active i {
+    -ms-transform: rotate(180deg); /* IE 9 */
+    -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
+    transform: rotate(180deg);
+}
