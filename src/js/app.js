@@ -1,4 +1,4 @@
-import {Renderer as background} from "../../util/ipcHandler";
+import {Renderer as background} from "./util/ipcHandler";
 import AppSettingsModel from "./backbone/Models/AppSettings";
 import AppView from "./backbone/Views/AppView";
 import ScheduleCollection from "./backbone/Collections/ScheduleCollection.js";
