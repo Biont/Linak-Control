@@ -67,7 +67,7 @@ class Main {
 	spawnApp() {
 
 		app.on( 'browser-window-created', function( e, window ) {
-			window.setMenu( null );
+			// window.setMenu( null );
 		} );
 
 		win = this.getWindow();
@@ -86,12 +86,14 @@ class Main {
 
 		// Create the browser window.
 		win = new BrowserWindow( {
-			width         : 800,
-			height        : 600,
-			webPreferences: {
+			width          : 800,
+			height         : 600,
+			webPreferences : {
 				blinkFeatures: 'OverlayScrollbars'
 			},
-			icon          : iconPath + 'app-256.png'
+			icon           : iconPath + 'app-256.png',
+			title          : 'Linak Control',
+			autoHideMenuBar: true
 		} );
 
 		// and load the index.html of the app.
