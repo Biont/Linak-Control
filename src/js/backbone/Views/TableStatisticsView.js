@@ -5,7 +5,7 @@ import Chart from "chart.js";
 /**
  * Does nothing but display a text message
  */
-export default class TableHeightView extends BiontView.extend( {} ) {
+export default class TableStatisticsView extends BiontView.extend( {} ) {
 	constructor( data, options ) {
 		super( data, options );
 		this.statistics = {};
