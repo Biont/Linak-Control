@@ -9,15 +9,24 @@ export default class TableStatisticsView extends BiontView.extend( {} ) {
 	constructor( data, options ) {
 		super( data, options );
 		this.statistics = {};
+		this.settings = data.settings;
+
+		/**
+		 * There is no reason to exist if noone's taking notice
+		 */
+		if ( !this.settings.get( 'enableStatistics' ) ) {
+			this.remove();
+		}
+
 		this.listenToTableStatistics();
 
 		this.capture( 'windowHidden', () => {
-			console.log('table statistics off')
+			console.log( 'table statistics off' )
 
 			this.stopListeningToTableStatistics()
 		} );
 		this.capture( 'windowShown', () => {
-			console.log('table statistics on')
+			console.log( 'table statistics on' )
 
 			this.listenToTableStatistics()
 		} );
@@ -28,6 +37,13 @@ export default class TableStatisticsView extends BiontView.extend( {} ) {
 	 * @returns {TableHeightView}
 	 */
 	render( force = false ) {
+		/**
+		 * If the view is still active after a settings change, get rid of it here
+		 */
+		if ( !this.settings.get( 'enableStatistics' ) ) {
+			this.remove();
+		}
+
 		if ( !this.chart || force ) {
 			this.$el.html( '<canvas id="myChart" width="400" height="250"></canvas>' );
 			this.chart = new Chart( $( '#myChart', this.$el ), {

@@ -28,7 +28,9 @@ export default class AppView extends BiontView.extend( {
 		tableHeight    : ( _this ) => new TableHeightView( {
 			settings: _this.settings,
 		} ),
-		tableStatistics: () => new TableStatisticsView()
+		tableStatistics: ( _this ) => new TableStatisticsView( {
+			settings: _this.settings,
+		} )
 	}
 } ) {
 
