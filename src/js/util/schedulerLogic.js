@@ -28,10 +28,18 @@ export default class SchedulerLogic {
 	}
 
 	getNextScheduleItem() {
-		return min( filter( this.schedule, ( model ) => this.getItemTimestamp( model ) > this.cmpDate ), ( model ) => this.getItemTimestamp( model ) );
+		let filtered = filter( this.schedule, ( model ) => this.getItemTimestamp( model ) > this.cmpDate );
+
+		if ( filtered.length ) {
+			return min( filtered, ( model ) => this.getItemTimestamp( model ) );
+		}
+
+		return false;
+
 	}
 
 	getItemTimestamp( item ) {
+		console.log( item );
 		let data = item.time.split( ':' );
 		let dateObj = new Date( this.cmpDate );
 		dateObj.setHours( data[ 0 ] );
