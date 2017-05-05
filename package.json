@@ -9,6 +9,7 @@
     "electron-settings": "^3.0.14",
     "hammerjs": "^2.0.8",
     "jquery": "^3.2.1",
+    "jquery-knob": "^1.2.11",
     "material-design-icons-iconfont": "^3.0.3",
     "materialize-clockpicker": "^1.0.1",
     "materialize-css": "^0.98.2",

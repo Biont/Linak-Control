@@ -75,7 +75,7 @@ export default class Background {
 	}
 
 	init() {
-
+		console.log( settings.getAll() );
 		subscriptions.register( windowHiddenKey );
 		subscriptions.register( windowShownKey );
 
@@ -185,7 +185,9 @@ export default class Background {
 
 	loop() {
 		this.sendTableHeight();
-		this.sendStatistics();
+		if ( this.statistics.isEnabled() ) {
+			this.sendStatistics();
+		}
 	}
 
 	sendTableHeight() {
@@ -197,9 +199,11 @@ export default class Background {
 			// 	} );
 			// 	return;
 			// }
+			if ( this.statistics.isEnabled() ) {
+				this.statistics.addHeightTime( result.signal, heightTickRate );
+				this.statistics.save();
+			}
 
-			this.statistics.addHeightTime( result.signal, heightTickRate );
-			this.statistics.save();
 			subscriptions.trigger( tableHeightKey, result )
 		} );
 	}

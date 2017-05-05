@@ -264,7 +264,7 @@ export default class BiontView extends Backbone.View.extend( {
 				break;
 			default:
 				$element.change( () => this.model.set( attr, $element.val() ) );
-				this.listenTo( this.model, 'change', ( model ) => $element.val( model.get( attr ) ) );
+				this.listenTo( this.model, 'change', ( model ) => $element.val( model.get( attr ) ).change() );
 				$element.val( this.model.get( attr ) );
 				break;
 		}

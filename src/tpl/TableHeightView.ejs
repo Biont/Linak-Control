@@ -1,7 +1,39 @@
 <div class="row">
-	<div class="col s10 offset-s1">
-		<div class="center-align">
-			<div id="progress"></div>
+	<div class="col s10 offset-s1 center-align">
+		<div class="clearfix" style="position:relative;height:280px;margin:0 auto">
+			<div style="position:absolute;left:0;top:0;width:200%;margin-left:-50%">
+				<input
+					data-output
+					data-bind="height"
+					type="number"
+					readonly
+					data-min="<%= min %>"
+					data-max="<%= max %>"
+					data-width="220"
+					data-height="220"
+					data-thickness=".2"
+					data-displayinput="false"
+				>
+			</div>
+			<div style="position:absolute;top:30px;width:200%;margin-left:-50%">
+				<input
+					data-input
+					data-bind="targetHeight"
+					type="number"
+					value="<%= height %>"
+					data-min="<%= min %>"
+					data-max="<%= max %>"
+					step="1000"
+					data-displayinput="false"
+					data-width="160"
+					data-height="160"
+					data-thickness=".1"
+					data-fgcolor="rgb(127, 255, 0)"
+					data-cursor=true
+				>
+			</div>
+			<div data-bind="height" style="position:inherit;top:100px"></div>
 		</div>
+		<div style="clear:both"></div>
 	</div>
 </div>
