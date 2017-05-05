@@ -1,4 +1,4 @@
-import {extend} from "underscore";
+import {debounce, extend} from "underscore";
 import {ipcRenderer, remote} from "electron";
 import {Renderer as background} from "../../util/ipcHandler";
 import BiontView from "./BiontView";
@@ -63,10 +63,10 @@ export default class TableHeightView extends BiontView.extend( {
 			$( '[data-output]', this.$el ).knob();
 			$( '[data-input]', this.$el ).knob(
 				{
-					release: ( value ) => {
+					release: debounce( ( value ) => {
 						this.model.set( 'targetHeight', value );
 						ipcRenderer.send( 'move-table', { height: value } );
-					}
+					}, 1000 )
 				}
 			);
 		}
