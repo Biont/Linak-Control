@@ -1,11 +1,10 @@
-import {find} from "underscore";
+import { min} from "underscore";
 
 export default class SchedulerLogic {
 	constructor( schedule, subscribers ) {
 		this.schedule = schedule;
 		this.setData( schedule );
 		this.subscribers = subscribers;
-		console.log( this.schedule );
 	}
 
 	setData( schedule ) {
@@ -29,7 +28,7 @@ export default class SchedulerLogic {
 	}
 
 	getNextScheduleItem() {
-		return find( this.schedule, ( model ) => this.getItemTimestamp( model ) > this.cmpDate );
+		return min( this.schedule, ( model ) => this.getItemTimestamp( model ) );
 	}
 
 	getItemTimestamp( item ) {
@@ -38,7 +37,6 @@ export default class SchedulerLogic {
 		dateObj.setHours( data[ 0 ] );
 		dateObj.setMinutes( data[ 1 ] );
 		dateObj.setSeconds( '00' );
-
 		return dateObj.getTime();
 	}
 
@@ -56,6 +54,7 @@ export default class SchedulerLogic {
 		let diff;
 		let nextItem = this.getNextScheduleItem();
 		if ( diff = this.getTimeDifference( nextItem ) ) {
+			console.log( 'Next action is at ' + nextItem.time );
 			this.subscribers.forEach( ( element, index, array ) => {
 				let subscription = diff + element.delay;
 				element.curTimeout = setTimeout( () => element.callback( nextItem ), subscription );
