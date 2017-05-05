@@ -2,7 +2,7 @@ import {app, BrowserWindow, Menu, Tray} from "electron";
 const Background = require( './background' );
 const path = require( 'path' );
 const url = require( 'url' );
-const iconPath = path.join( __dirname, 'icons/app-256.png' );
+const iconPath = path.join( __dirname, 'icons/' );
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
@@ -13,7 +13,7 @@ class Main {
 
 	getTray() {
 		if ( !this.tray ) {
-			this.tray = new Tray( iconPath );
+			this.tray = new Tray( iconPath + 'app-128.png' );
 
 			let contextMenu = Menu.buildFromTemplate( [
 				{
@@ -90,7 +90,8 @@ class Main {
 			height        : 600,
 			webPreferences: {
 				blinkFeatures: 'OverlayScrollbars'
-			}
+			},
+			icon          : iconPath + 'app-256.png'
 		} );
 
 		// and load the index.html of the app.
