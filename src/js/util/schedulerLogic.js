@@ -1,4 +1,4 @@
-import { min} from "underscore";
+import {filter, min} from "underscore";
 
 export default class SchedulerLogic {
 	constructor( schedule, subscribers ) {
@@ -28,7 +28,7 @@ export default class SchedulerLogic {
 	}
 
 	getNextScheduleItem() {
-		return min( this.schedule, ( model ) => this.getItemTimestamp( model ) );
+		return min( filter( this.schedule, ( model ) => this.getItemTimestamp( model ) > this.cmpDate ), ( model ) => this.getItemTimestamp( model ) );
 	}
 
 	getItemTimestamp( item ) {
