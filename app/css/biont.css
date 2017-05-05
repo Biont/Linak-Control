@@ -48,7 +48,9 @@
 [data-row-actions] [data-action] {
     margin: 0.1em 0.3em;
 }
-
+body{
+    overflow-x: hidden;
+}
 * {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
