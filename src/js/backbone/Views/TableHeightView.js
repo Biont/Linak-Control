@@ -66,7 +66,7 @@ export default class TableHeightView extends BiontView.extend( {
 					release: debounce( ( value ) => {
 						this.model.set( 'targetHeight', value );
 						ipcRenderer.send( 'move-table', { height: value } );
-					}, 1000 )
+					}, 666 )
 				}
 			);
 		}
