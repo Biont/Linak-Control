@@ -52,11 +52,12 @@ export default class LinakUtil {
 		}
 		this.polling = this.polling || true;
 		exec( __dirname + '/bin/example-getHeight', ( error, stdout, stderr ) => {
-
+			console.log( 'poll...' );
 			if ( !error ) {
 				console.error( 'DEVICE FOUND' );
 				this.deviceFound = true;
-
+				clearTimeout( this.pollingTimeout );
+				this.polling = false;
 				this.trigger( 'deviceFound' );
 				return;
 			}
@@ -94,7 +95,7 @@ export default class LinakUtil {
 		console.log( 'Attempting to move the table to position ' + position );
 		exec( __dirname + '/bin/example-moveTo ' + position, ( error, stdout, stderr ) => {
 			if ( error ) {
-				this.handleError();
+				this.handleError( error );
 			}
 			callback( error, stdout, stderr )
 		} );

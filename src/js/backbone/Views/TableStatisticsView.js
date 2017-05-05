@@ -12,9 +12,13 @@ export default class TableHeightView extends BiontView.extend( {} ) {
 		this.listenToTableStatistics();
 
 		this.capture( 'windowHidden', () => {
+			console.log('table statistics off')
+
 			this.stopListeningToTableStatistics()
 		} );
 		this.capture( 'windowShown', () => {
+			console.log('table statistics on')
+
 			this.listenToTableStatistics()
 		} );
 	}

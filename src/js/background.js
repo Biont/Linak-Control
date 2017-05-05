@@ -13,7 +13,8 @@ const notificationKey = 'notifications';
 const alertKey = 'alert';
 const tableHeightKey = 'table-height';
 const statisticsKey = 'app-statistics';
-const windowHiddenKey = 'window-hidden';
+const windowHiddenKey = 'windowHidden';
+const windowShownKey = 'windowShown';
 
 const heightTickRate = 1000;
 const statisticsTickRate = 1000;
@@ -75,7 +76,8 @@ export default class Background {
 
 	init() {
 
-		// subscriptions.register( windowHiddenKey );
+		subscriptions.register( windowHiddenKey );
+		subscriptions.register( windowShownKey );
 
 		subscriptions.register( deviceFound );
 		subscriptions.register( deviceLost );
@@ -86,9 +88,20 @@ export default class Background {
 		subscriptions.register( alertKey );
 
 		this.window.on( 'hide', () => {
+			console.log( 'windowHidden' );
+
+			subscriptions.trigger( windowHiddenKey );
+
 			this.stopLoop();
 		} );
+
+		this.window.on( 'show', () => {
+			console.log( 'windowShown' );
+			subscriptions.trigger( windowShownKey );
+			this.startLoop();
+		} );
 		this.linak.on( 'deviceFound', () => {
+			console.log( 'deciveFound' );
 			subscriptions.trigger( deviceFound );
 			this.scheduler.enqueue();
 			this.startLoop();
@@ -161,10 +174,12 @@ export default class Background {
 	}
 
 	startLoop() {
+		console.log( 'start looping' );
 		this.loopInterval = setInterval( () => this.loop(), heightTickRate );
 	}
 
 	stopLoop() {
+		console.log( 'stop looping' );
 		clearInterval( this.loopInterval );
 	}
 
