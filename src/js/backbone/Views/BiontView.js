@@ -243,11 +243,24 @@ export default class BiontView extends Backbone.View.extend( {
 		return this.formatters[ attr ].call( this, data, this );
 	}
 
+    /**
+	 * Default data binding handler.
+	 * sets the element's html() to the specified model value.
+	 *
+     * @param $element
+     * @param attr
+     */
 	bindDefault( $element, attr ) {
 		$element.html( this.formatAttr( attr, this.model.get( attr ) ) );
 		this.listenTo( this.model, 'change', ( model ) => $element.html( this.formatAttr( attr, model.get( attr ) ) ) );
 	}
 
+    /**
+	 * Bind data to an input field. Will try to intelligently handle all different input types
+	 *
+     * @param $element
+     * @param attr
+     */
 	bindInput( $element, attr ) {
 		switch ( $element.attr( 'type' ) ) {
 			case 'checkbox':
@@ -270,6 +283,9 @@ export default class BiontView extends Backbone.View.extend( {
 		}
 	}
 
+    /**
+	 * Render all model data as a string.
+     */
 	dump() {
 		console.log( this.model );
 		return JSON.stringify( this.getTemplateData() );
@@ -291,15 +307,32 @@ export default class BiontView extends Backbone.View.extend( {
 		}
 	}
 
+    /**
+	 * Removes the view from the DOM and also tries to deregister all event handlers
+     */
 	remove() {
 		this.undelegateEvents();
 		super.remove();
 	}
 
+    /**
+	 * Bubble an event up or down.
+	 * It will get passed on to all children or parents.
+	 *
+     * @param handle
+     * @param data
+     * @param upwards
+     */
 	bubble( handle, data, upwards = true ) {
 		_bubble( this, handle, data, upwards );
 	}
 
+    /**
+	 * Act on a bubbled event.
+	 *
+     * @param handle
+     * @param callback
+     */
 	capture( handle, callback ) {
 		let listeners;
 		if ( eventStorage.has( this ) ) {
