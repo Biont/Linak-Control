@@ -1,47 +1,61 @@
 <section class="row">
-	<div class="col col s12 m6">
-		<label for="heightOffset_<%= this.cid %>">Height offset (cm)</label>
-		<input
-			data-bind="heightOffset"
-			id="heightOffset_<%= this.cid %>"
-			type="number"
-			value="<%= heightOffset %>"
-			step="0.1"
-			min="0"
-		>
-		<p>
-			This is the height of your table at position 0. The value gets added whenever a height value from the USB driver is rendered.
-			As a result, you should see a value that more or less closely matches your actual, real-life table height.
-		</p>
-	</div>
-	<div class="col col s12 m6">
-		<label for="maxHeight<%= this.cid %>">Max Height</label>
-		<input
-			data-bind="maxHeight"
-			id="maxHeight<%= this.cid %>"
-			type="number"
-			value="<%= maxHeight %>"
-			step="0.1"
-			min="0"
-		>
-		<p>
-			In case there are different variants of the LINAK motor and driver, you can specify the highest achievable table height here.
-			It's mainly used for calculating the table height percentage bar.
-		</p>
-	</div>
+    <div class="col col s12 m6">
+        <label for="heightOffset_<%= this.cid %>">Height offset (cm)</label>
+        <input
+                data-bind="heightOffset"
+                id="heightOffset_<%= this.cid %>"
+                type="number"
+                value="<%= heightOffset %>"
+                step="0.1"
+                min="0"
+        >
+        <p>
+            This is the height of your table at position 0. The value gets added whenever a height value from the USB
+            driver is rendered.
+            As a result, you should see a value that more or less closely matches your actual, real-life table height.
+        </p>
+    </div>
+    <div class="col col s12 m6">
+        <label for="maxHeight<%= this.cid %>">Max Height</label>
+        <input
+                data-bind="maxHeight"
+                id="maxHeight<%= this.cid %>"
+                type="number"
+                value="<%= maxHeight %>"
+                step="0.1"
+                min="0"
+        >
+        <p>
+            In case there are different variants of the LINAK motor and driver, you can specify the highest achievable
+            table height here.
+            It's mainly used for calculating the table height percentage bar.
+        </p>
+    </div>
 </section>
 <section class="row">
-	<div class="col col s12 m6">
+    <div class="col col s12 m6">
 
-		<input
-			data-bind="enableStatistics"
-			id="enableStatistics<%= this.cid %>"
-			type="checkbox"
-		>
-		<label for="enableStatistics<%= this.cid %>">Enable Statistics?</label>
-		<p>
-			This program stores the total time spent on each table height and displays it in a nice graph.
-			If you do not like the feature, you can turn it off here.
-		</p>
-	</div>
+        <input
+                data-bind="autoStart"
+                id="autoStart<%= this.cid %>"
+                type="checkbox"
+        >
+        <label for="autoStart<%= this.cid %>">Auto Start?</label>
+        <p>
+            When enabled, the program will start automatically after each boot.
+        </p>
+    </div>
+    <div class="col col s12 m6">
+
+        <input
+                data-bind="enableStatistics"
+                id="enableStatistics<%= this.cid %>"
+                type="checkbox"
+        >
+        <label for="enableStatistics<%= this.cid %>">Enable Statistics?</label>
+        <p>
+            This program stores the total time spent on each table height and displays it in a nice graph.
+            If you do not like the feature, you can turn it off here.
+        </p>
+    </div>
 </section>
