@@ -5,6 +5,7 @@
   "dependencies": {
     "auto-launch": "^5.0.1",
     "backbone": "^1.3.3",
+    "biont-backbone": "git+ssh@github.com:Biont/BiontBackbone.git",
     "chart.js": "^2.5.0",
     "ejs": "^2.5.6",
     "electron-settings": "^3.0.14",
