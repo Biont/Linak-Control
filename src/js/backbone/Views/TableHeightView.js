@@ -8,7 +8,8 @@ import {BiontView} from "biont-backbone";
  */
 export default class TableHeightView extends BiontView.extend( {
 	formatters: {
-		height: ( value, instance ) => Math.round( value / 98.0 + parseFloat( instance.settings.get( 'heightOffset' ) ) ).toFixed( 1 ) + 'cm'
+		height      : ( value, instance ) => instance.formatSignalToCm( value ),
+		targetHeight: ( value, instance ) => instance.formatSignalToCm( value )
 	}
 } ) {
 	constructor( data, options ) {
@@ -60,16 +61,23 @@ export default class TableHeightView extends BiontView.extend( {
 		let rendered = this.rendered;
 		super.render( force );
 		if ( !rendered || force ) {
-console.log(window.$.knob);
-			window.$( '[data-output]', this.$el ).knob();
-			window.$( '[data-input]', this.$el ).knob(
+
+			$( '[data-output]', this.$el ).knob();
+			$( '[data-input]', this.$el ).knob(
 				{
-					release: debounce( ( value ) => {
+					change : ( value ) => {
 						this.model.set( 'targetHeight', value );
+					},
+					release: debounce( ( value ) => {
 						ipcRenderer.send( 'move-table', { height: value } );
 					}, 666 )
 				}
-			);
+			).children().off( 'mousewheel DOMMouseScroll' );
+			;
 		}
+	}
+
+	formatSignalToCm( value ) {
+		return Math.round( value / 98.0 + parseFloat( this.settings.get( 'heightOffset' ) ) ).toFixed( 2 ) + 'cm'
 	}
 }

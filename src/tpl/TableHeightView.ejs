@@ -13,6 +13,7 @@
 					data-height="220"
 					data-thickness=".2"
 					data-displayinput="false"
+					data-fgcolor="#1a237e"
 				>
 			</div>
 			<div style="position:absolute;top:30px;width:200%;margin-left:-50%">
@@ -27,11 +28,18 @@
 					data-width="160"
 					data-height="160"
 					data-thickness=".1"
-					data-fgcolor="rgb(127, 255, 0)"
+					data-fgcolor="#00C853"
 					data-cursor=true
 				>
 			</div>
-			<div data-bind="height" style="position:inherit;top:100px;pointer-events: none"></div>
+			<div style="position:inherit;top:90px;pointer-events: none">
+				<div style="font-weight: 300">Current:
+					<span data-bind="height" class="indigo-text text-darken-4"></span>
+				</div>
+				<div style="font-weight: 100">Target:
+					<span data-bind="targetHeight" class="green-text text-accent-4"></span>
+				</div>
+			</div>
 		</div>
 		<div style="clear:both"></div>
 	</div>
