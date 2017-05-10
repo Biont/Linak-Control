@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Linak Control</title>
+    <script type="text/javascript">
+        (function(){
+            var templates = {};
+            <%- getTemplates() %>
+            window.BIONT_TEMPLATE_LOADER_CONFIG = {
+                type: 'object',
+                object: templates
+            };
+        })();
+
+    </script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
+    <script src="bower_components/backbone/backbone-min.js"></script>
+    <script src="bower_components/materialize/dist/js/materialize.min.js"></script>
+    <script src="js/index.js"></script>
+
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="bower_components/materialize/dist/css/materialize.min.css">
+</head>
+<body>
+<div id="main-app"></div>
+</body>
+</html>

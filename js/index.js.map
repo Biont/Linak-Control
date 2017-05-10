@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/js/index.js"],"names":["appView"],"mappings":";;AAAA;;;;;;AAEA,IAAMA,UAAU,uBAAhB","file":"index.js","sourcesContent":["import AppView from './AppView';\n\nconst appView = new AppView();\n"]}
