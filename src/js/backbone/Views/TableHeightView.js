@@ -4,7 +4,7 @@ import {Renderer as background} from "../../util/ipcHandler";
 import {BiontView} from "biont-backbone";
 
 /**
- * Does nothing but display a text message
+ * Displays the table height and allows manual control
  */
 export default class TableHeightView extends BiontView.extend( {
 	formatters: {
@@ -33,6 +33,11 @@ export default class TableHeightView extends BiontView.extend( {
 		} );
 	}
 
+	/**
+	 * Attach event listeners and set model data.
+	 *
+	 * @returns {*}
+	 */
 	listenToTableHeight() {
 
 		return this.subscription = background.subscribe( 'table-height', ( event, data ) => {
@@ -46,17 +51,28 @@ export default class TableHeightView extends BiontView.extend( {
 
 	}
 
+	/**
+	 * Detach event listeners
+	 */
 	stopListeningToTableHeight() {
 		if ( this.subscription ) {
 			background.unsubscribe( 'table-height', this.subscription );
 		}
 	}
 
+	/**
+	 * Kill this view.
+	 */
 	remove() {
 		this.stopListeningToTableHeight();
 		super.remove();
 	}
 
+	/**
+	 * Render the Table height widget.
+	 *
+	 * @param force
+	 */
 	render( force = false ) {
 		let rendered = this.rendered;
 		super.render( force );
@@ -72,11 +88,17 @@ export default class TableHeightView extends BiontView.extend( {
 						ipcRenderer.send( 'move-table', { height: value } );
 					}, 666 )
 				}
-			).children().off( 'mousewheel DOMMouseScroll' );
-			;
+			).children().off( 'mousewheel DOMMouseScroll' ); // Prevent scroll events on input!!!
+
 		}
 	}
 
+	/**
+	 * Format the driver height value to a nice cm value.
+	 *
+	 * @param value
+	 * @returns {string}
+	 */
 	formatSignalToCm( value ) {
 		return ( value / 98.0 + parseFloat( this.settings.get( 'heightOffset' ) ) ).toFixed( 1 ) + 'cm'
 	}
