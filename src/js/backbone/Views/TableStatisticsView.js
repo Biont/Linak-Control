@@ -91,7 +91,7 @@ export default class TableStatisticsView extends BiontView.extend( {} ) {
 	}
 
 	formatSignalToCm( v ) {
-		return Math.round( v / 98.0 ).toFixed( 1 ) + ' cm'
+		return ( v / 98.0 ).toFixed( 1 ) + ' cm'
 	}
 
 	listenToTableStatistics() {

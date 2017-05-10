@@ -78,6 +78,6 @@ export default class TableHeightView extends BiontView.extend( {
 	}
 
 	formatSignalToCm( value ) {
-		return Math.round( value / 98.0 + parseFloat( this.settings.get( 'heightOffset' ) ) ).toFixed( 2 ) + 'cm'
+		return ( value / 98.0 + parseFloat( this.settings.get( 'heightOffset' ) ) ).toFixed( 1 ) + 'cm'
 	}
 }

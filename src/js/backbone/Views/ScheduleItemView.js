@@ -12,7 +12,7 @@ export default class ScheduleItemView extends BiontView.extend( {
 		} )
 	},
 	formatters: {
-		height: ( value, instance ) => Math.round( value / 98.0 + parseFloat( instance.settings.get( 'heightOffset' ) ) ).toFixed( 1 ) + 'cm'
+		height: ( value, instance ) => ( value / 98.0 + parseFloat( instance.settings.get( 'heightOffset' ) ) ).toFixed( 1 ) + 'cm'
 	}
 } ) {
 	constructor( data, options ) {
