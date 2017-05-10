@@ -2,7 +2,7 @@ export default class Statistics {
 	constructor( settings, dataKey ) {
 		this.settings = settings;
 		this.dataKey = dataKey;
-		this.settingsKey = 'AppSettings.mainApp.enableStatistics';
+		this.settingsKey = 'AppSettings.mainApp';
 		this.data = this.settings.get( dataKey ) || {};
 	}
 
