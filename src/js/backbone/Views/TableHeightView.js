@@ -23,13 +23,14 @@ export default class TableHeightView extends BiontView.extend( {
 		} );
 		this.listenToTableHeight();
 
+		/**
+		 * Stop/resume work when the window is hidden/shown
+		 */
 		this.capture( 'windowHidden', () => {
-			console.log( 'table height off' )
 			this.stopListeningToTableHeight()
 		} );
 		this.capture( 'windowShown', () => {
-			console.log( 'table height on' )
-			this.listenToTableHeight()
+			this.listenToTableHeight();
 		} );
 	}
 
@@ -100,6 +101,8 @@ export default class TableHeightView extends BiontView.extend( {
 	 * @returns {string}
 	 */
 	formatSignalToCm( value ) {
-		return ( value / 98.0 + parseFloat( this.settings.get( 'heightOffset' ) ) ).toFixed( 1 ) + 'cm'
+		return (
+			value / 98.0 + parseFloat( this.settings.get( 'heightOffset' ) )
+			).toFixed( 1 ) + 'cm'
 	}
 }
