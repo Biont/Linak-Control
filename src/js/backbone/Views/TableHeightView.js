@@ -1,7 +1,7 @@
 import {debounce, extend} from "underscore";
 import {ipcRenderer, remote} from "electron";
 import {Renderer as background} from "../../util/ipcHandler";
-import BiontView from "./BiontView";
+import {BiontView} from "biont-backbone";
 
 /**
  * Does nothing but display a text message
@@ -60,8 +60,9 @@ export default class TableHeightView extends BiontView.extend( {
 		let rendered = this.rendered;
 		super.render( force );
 		if ( !rendered || force ) {
-			$( '[data-output]', this.$el ).knob();
-			$( '[data-input]', this.$el ).knob(
+console.log(window.$.knob);
+			window.$( '[data-output]', this.$el ).knob();
+			window.$( '[data-input]', this.$el ).knob(
 				{
 					release: debounce( ( value ) => {
 						this.model.set( 'targetHeight', value );

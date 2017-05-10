@@ -1,5 +1,5 @@
 import {Renderer as background} from "../../util/ipcHandler";
-import BiontView from "./BiontView";
+import {BiontView} from "biont-backbone";
 import Chart from "chart.js";
 
 /**

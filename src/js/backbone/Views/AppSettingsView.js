@@ -1,5 +1,5 @@
 import {ipcRenderer, remote} from "electron";
-import BiontView from "./BiontView.js";
+import {BiontView} from "biont-backbone";
 export default class AppSettingsView extends BiontView.extend( {} ) {
 
 }

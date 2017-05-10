@@ -1,5 +1,5 @@
 import {ipcRenderer, remote} from "electron";
-import BiontView from "./BiontView.js";
+import {BiontView} from "biont-backbone";
 import TimePickerView from "./TimePickerView";
 export default class ScheduleFormView extends BiontView.extend( {
 	events  : {

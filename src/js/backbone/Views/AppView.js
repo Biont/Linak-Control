@@ -1,6 +1,7 @@
 import {Renderer as background} from "../../util/ipcHandler";
 
-import BiontView from "./BiontView.js";
+import {BiontView} from "biont-backbone";
+
 import ConfirmView from "./ConfirmView";
 import OverlayView from "./OverlayView";
 import ModalView from "./ModalView";

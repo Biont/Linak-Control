@@ -1,4 +1,4 @@
-import ListView from "./ListView";
+import {ListView} from "biont-backbone";
 
 export default class LinakListView extends ListView.extend( {} ) {
 	constructor( data, options ) {

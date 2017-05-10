@@ -1,5 +1,6 @@
-import BiontView from "./BiontView.js";
+import {BiontView} from "biont-backbone";
 import ScheduleFormView from "./ScheduleFormView";
+
 
 export default class ScheduleItemView extends BiontView.extend( {
 	events    : {

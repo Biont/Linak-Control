@@ -1,4 +1,4 @@
-import BiontView from "./BiontView";
+import {BiontView} from "biont-backbone";
 import TextView from "./TextView";
 
 /**
