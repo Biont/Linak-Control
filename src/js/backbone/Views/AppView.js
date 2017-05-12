@@ -1,6 +1,6 @@
 import {Renderer as background} from "../../util/ipcHandler";
 
-import {BiontView} from "biont-backbone";
+import {LazyLoadView} from "biont-backbone";
 
 import ConfirmView from "./ConfirmView";
 import OverlayView from "./OverlayView";
@@ -15,7 +15,9 @@ import LinakListView from "./LinakListView.js";
 import ScheduleItemView from "./ScheduleItemView.js";
 import ScheduleItem from "../Models/ScheduleItem.js";
 
-export default class AppView extends BiontView.extend( {
+
+
+export default class AppView extends LazyLoadView.extend( {
 	events     : {
 		"click [data-add]"       : "open",
 		"click [data-delete-all]": "deleteAll",
@@ -35,6 +37,12 @@ export default class AppView extends BiontView.extend( {
 	}
 } ) {
 
+	/**
+	 * Set up this View. Register all event listeners
+	 *
+	 * @param data
+	 * @param options
+	 */
 	constructor( data, options ) {
 
 		super( data, options );

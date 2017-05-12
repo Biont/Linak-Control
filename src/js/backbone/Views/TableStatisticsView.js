@@ -30,6 +30,15 @@ export default class TableStatisticsView extends BiontView.extend( {} ) {
 
 			this.listenToTableStatistics()
 		} );
+
+		this.on( 'scrollEnter', ( data ) => {
+			this.listenToTableStatistics();
+
+		} );
+		this.on( 'scrollLeave', ( data ) => {
+			this.stopListeningToTableStatistics()
+
+		} );
 	}
 
 	/**
@@ -91,7 +100,9 @@ export default class TableStatisticsView extends BiontView.extend( {} ) {
 	}
 
 	formatSignalToCm( v ) {
-		return ( v / 98.0 ).toFixed( 1 ) + ' cm'
+		return (
+			v / 98.0
+			).toFixed( 1 ) + ' cm'
 	}
 
 	listenToTableStatistics() {

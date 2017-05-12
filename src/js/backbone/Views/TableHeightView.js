@@ -32,6 +32,16 @@ export default class TableHeightView extends BiontView.extend( {
 		this.capture( 'windowShown', () => {
 			this.listenToTableHeight();
 		} );
+
+		this.on( 'scrollEnter', ( data ) => {
+			this.listenToTableHeight();
+
+		} );
+		this.on( 'scrollLeave', ( data ) => {
+			this.stopListeningToTableHeight()
+
+		} );
+
 	}
 
 	/**
@@ -102,7 +112,7 @@ export default class TableHeightView extends BiontView.extend( {
 	 */
 	formatSignalToCm( value ) {
 		return (
-			value / 98.0 + parseFloat( this.settings.get( 'heightOffset' ) )
+				value / 98.0 + parseFloat( this.settings.get( 'heightOffset' ) )
 			).toFixed( 1 ) + 'cm'
 	}
 }
