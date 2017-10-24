@@ -5,25 +5,25 @@
   "dependencies": {
     "auto-launch": "^5.0.1",
     "backbone": "^1.3.3",
-    "biont-backbone": "git+ssh@github.com:Biont/BiontBackbone.git",
-    "chart.js": "^2.5.0",
-    "ejs": "^2.5.6",
-    "electron-settings": "^3.0.14",
+    "biont-backbone": "git+ssh://git@github.com/Biont/BiontBackbone.git",
+    "chart.js": "^2.7.0",
+    "ejs": "^2.5.7",
+    "electron-settings": "^3.1.3",
     "hammerjs": "^2.0.8",
     "jquery": "^3.2.1",
     "jquery-knob": "^1.2.11",
     "material-design-icons-iconfont": "^3.0.3",
     "materialize-clockpicker": "^1.0.1",
-    "materialize-css": "^0.98.2"
+    "materialize-css": "^0.100.2"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2015-loose": "^8.0.0",
-    "electron": "^1.6.7",
+    "electron": "^1.8.2",
     "grunt": "^1.0.1",
-    "grunt-babel": "^6.0.0",
+    "grunt-babel": "^7.0.0",
     "grunt-contrib-watch": "^1.0.0",
-    "grunt-electron": "^5.0.0",
+    "grunt-electron": "^6.0.0",
     "load-grunt-tasks": "^3.5.2"
   }
 }
