@@ -116,14 +116,12 @@ export default class Background {
         });
 
         this.linak.on('permissionProblem', (error) => {
-            console.log('sending alert');
-
             if (this.rendererReady) {
-                console.log('actually sending alert');
-
                 subscriptions.trigger(alertKey, {
                     title: 'Permission Problem',
-                    message: `I have found a device, but do not have permission to talk to it. This is the full error message: ${error}`
+	                message: "I have found a device, but do not have permission to talk to it. "
+	                + "Check out <a href='https://github.com/ranma1988/usb2lin06-HID-in-linux-for-LINAK-Desk-Control-Cable#to-run-as-regular' target='_blank'>this guide</a> to fix this problem.<br>"
+	                + "This is the full error message: <br><pre>" + error + "</pre>"
                 });
             }
         });
@@ -132,7 +130,6 @@ export default class Background {
         subscriptions.on('rendererReady', () => {
             this.rendererReady = true;
             if (this.linak.hasDevice()) {
-                console.log('Window is ready ' + deviceFound);
                 subscriptions.trigger(deviceFound);
             } else {
                 console.log('Window is ready ' + deviceLost);
